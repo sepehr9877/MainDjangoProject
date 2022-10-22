@@ -48,6 +48,5 @@ class Account(AbstractBaseUser):
     is_staff=models.BooleanField(default=False)
     image=models.ImageField(upload_to='user',null=True)
     USERNAME_FIELD=['username']
-    REQUIRED_FIELDS = ['username','password','firstname','lastname']
     Object=UserManger()
 

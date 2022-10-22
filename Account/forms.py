@@ -1,15 +1,15 @@
 from django import forms
-from django.forms import TextInput,RadioSelect,Select,EmailInput
+from django.forms import TextInput, RadioSelect, Select, EmailInput, ModelForm
 from .models import Account
-class RepasswordForm(forms.ModelForm):
+class RepasswordForm(ModelForm):
     class Meta:
         model=Account
         fields=['password']
         widgets={
-            'password':TextInput(attrs={"class":"form-control","Placeholder":"Enter your Password Again"})
+            'password':TextInput(attrs={"Type":"text","class":"form-control","Placeholder":"Enter your Password Again"})
         }
 
-class RegistrationForm(forms.ModelForm):
+class RegistrationForm(ModelForm):
 
     class Meta:
         Gender=(
@@ -24,15 +24,15 @@ class RegistrationForm(forms.ModelForm):
             ('others', 'others')
         )
         model=Account
-        fields=['firstname','lastname','gender',
+        fields=['username','lastname','gender',
                 'city','country','password','email']
         widgets={
-            'firstname':TextInput(attrs={'Placeholder':"Write Your Name","class":"form-control"}),
-            'lastname':TextInput(attrs={"Placeholder":"Write Your LastName","class":"form-control"}),
+            'username':TextInput(attrs={"Type":"text",'Placeholder':"Write Your Name","class":"form-control"}),
+            'lastname':TextInput(attrs={"Type":"text","Placeholder":"Write Your LastName","class":"form-control"}),
             'gender':RadioSelect(choices=Gender),
-            'city':TextInput(attrs={"Placeholder":"Enter the City"}),
-            'country':Select(attrs={"id":"inputState","class":"form-control"},choices=Country),
-            'password':TextInput(attrs={"class":"form-control"}),
-            'email':EmailInput(attrs={"class":"form-control","placeholder":"Enter a Valid Emial"})
+            'city':TextInput(attrs={"Type":"text","Placeholder":"Enter the City","class":"form-control"}),
+            'country':Select(attrs={"Type":"text","id":"inputState","class":"form-control"},choices=Country),
+            'password':TextInput(attrs={"Type":"text","class":"form-control"}),
+            'email':EmailInput(attrs={"Type":"text","class":"form-control","placeholder":"Enter a Valid Emial"})
 
         }
