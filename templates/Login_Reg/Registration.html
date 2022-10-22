@@ -1,0 +1,71 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+<section class="section-content padding-y">
+
+<!-- ============================ COMPONENT REGISTER   ================================= -->
+	<div class="card mx-auto" style="max-width:520px; margin-top:40px;">
+      <article class="card-body">
+		<header class="mb-4"><h4 class="card-title">Sign up</h4></header>
+
+		<form method="post" action="/Registration">
+        {% csrf_token %}
+				<div class="form-row">
+					<div class="col form-group">
+						<label>First name</label>
+					  	{{ Registration.firstname }}
+					</div> <!-- form-group end.// -->
+					<div class="col form-group">
+						<label>Last name</label>
+					  	{{ Registration.lastname }}
+					</div> <!-- form-group end.// -->
+				</div> <!-- form-row end.// -->
+				<div class="form-group">
+					<label>Email</label>
+					{{ Registration.email }}
+					<small class="form-text text-muted">We'll never share your email with anyone else.</small>
+				</div> <!-- form-group end.// -->
+				<div class="form-group">
+                    {% for gender in Registration.gender %}
+					<label class="custom-control custom-radio custom-control-inline">
+
+					   {{ gender.title }}
+					  {{ gender }}
+					</label>
+                    {% endfor %}
+				</div> <!-- form-group end.// -->
+				<div class="form-row">
+					<div class="form-group col-md-6">
+					  <label>City</label>
+					  {{ Registration.city }}
+					</div> <!-- form-group end.// -->
+					<div class="form-group col-md-6">
+					  <label>Country</label>
+					  <select id="inputState" class="form-control">
+                          {% for Country in Registration.country %}
+					    {{ Country }}
+                          {% endfor %}
+					  </select>
+					</div> <!-- form-group end.// -->
+				</div> <!-- form-row.// -->
+				<div class="form-row">
+					<div class="form-group col-md-6">
+						<label>Create password</label>
+					    {{ Registration.password }}
+					</div> <!-- form-group end.// -->
+					<div class="form-group col-md-6">
+						<label>Repeat password</label>
+					    {{ Repassword.password }}
+					</div> <!-- form-group end.// -->
+				</div>
+			    <div class="form-group">
+			        <button type="submit" class="btn btn-primary btn-block"> Register  </button>
+			    </div> <!-- form-group// -->
+
+			</form>
+		</article><!-- card-body.// -->
+    </div> <!-- card .// -->
+    <p class="text-center mt-4">Have an account? <a href="">Log In</a></p>
+    <br><br>
+</section><!-- header-main .// -->
+{% endblock %}
