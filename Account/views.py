@@ -1,8 +1,11 @@
-from django.shortcuts import render
+from django.contrib.auth.models import User
+from django.shortcuts import render, redirect
 from .forms import RegistrationForm
 from .models import Account,UserProfile
 def Registration(request):
     userid=request.user.id
+    if User.is_authenticated:
+        return redirect("/")
     if request.method=="POST":
         Register_form=RegistrationForm(data=request.POST or request.GET)
         print(Register_form.errors)
