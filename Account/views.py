@@ -1,9 +1,10 @@
 from django.shortcuts import render
-from .forms import RegistrationForm,RepasswordForm
+from .forms import RegistrationForm
+from .models import Account,UserProfile
 def Registration(request):
     userid=request.user.id
     if request.method=="POST":
-        Register_form=RegistrationForm(data=request.POST)
+        Register_form=RegistrationForm(data=request.POST or request.GET)
         print(Register_form.errors)
         if Register_form.is_valid():
             firstname=Register_form.cleaned_data['username']
@@ -13,14 +14,19 @@ def Registration(request):
             city=Register_form.cleaned_data['city']
             password=Register_form.cleaned_data['password']
             email=Register_form.cleaned_data['email']
-        Repassword_form=RepasswordForm(data=request.POST)
-        if Repassword_form.is_valid():
-            repassword=Repassword_form.cleaned_data['password']
-            print(repassword)
+            repassword=Register_form.cleaned_data['Repassword']
+            Account.Object.create_user(username=firstname,firstname=firstname,lastname=lastname,email=email,password=password)
+            UserProfile.objects.CreateUserProfile(firstname=firstname,
+                                                  lastname=lastname,
+                                                  password=password,
+                                                  email=email,
+                                                  gender=gender,
+                                                  city=city,
+                                                  country=country,
+                                                  username=firstname)
     else:
         Register_form=RegistrationForm()
-        Repassword_form=RepasswordForm()
-    context={"Registration":RegistrationForm,
-             "Repassword":Repassword_form}
+    context={"Registration":Register_form,}
     return render(request,"Login_Reg/Registration.html",context)
+
 # Create your views here.

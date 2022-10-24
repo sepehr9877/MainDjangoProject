@@ -1,15 +1,12 @@
 from django import forms
-from django.forms import TextInput, RadioSelect, Select, EmailInput, ModelForm
-from .models import Account
-class RepasswordForm(ModelForm):
-    class Meta:
-        model=Account
-        fields=['password']
-        widgets={
-            'password':TextInput(attrs={"Type":"text","class":"form-control","Placeholder":"Enter your Password Again"})
-        }
+from django.forms import TextInput, RadioSelect, Select, EmailInput, ModelForm,CharField
+from .models import UserProfile
+
 
 class RegistrationForm(ModelForm):
+    Repassword=CharField(widget=TextInput(attrs=
+        {"Type": "text", 'Placeholder': "Write Your Name", "class": "form-control"}
+        ))
 
     class Meta:
         Gender=(
@@ -17,15 +14,15 @@ class RegistrationForm(ModelForm):
             ('Female','Female')
         )
         Country=(
-            ('india', 'india'),
-            ('United States', 'United States'),
-            ('France', 'France'),
-            ('Italy', 'Italy'),
-            ('others', 'others')
+            ('1', 'india'),
+            ('2', 'United States'),
+            ('3', 'France'),
+            ('4', 'Italy'),
+            ('5', 'others')
         )
-        model=Account
+        model=UserProfile
         fields=['username','lastname','gender',
-                'city','country','password','email']
+                'city','country','password','email','Repassword']
         widgets={
             'username':TextInput(attrs={"Type":"text",'Placeholder':"Write Your Name","class":"form-control"}),
             'lastname':TextInput(attrs={"Type":"text","Placeholder":"Write Your LastName","class":"form-control"}),

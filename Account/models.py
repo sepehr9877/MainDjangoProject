@@ -2,7 +2,7 @@ from django.contrib.auth.base_user import BaseUserManager,AbstractBaseUser
 from django.db import models
 # Create your models here.
 class UserManger(BaseUserManager):
-    def create_user(self,firstname,lastname,username,email,password=None,gender=None,city=None,country=None):
+    def create_user(self,firstname,lastname,username,email,password=None):
         if not email:
             raise ValueError("Email needs to be completed")
         if not username:
@@ -14,9 +14,6 @@ class UserManger(BaseUserManager):
             username=username,
             firstname=firstname,
             lastname=lastname,
-            gender=gender,
-            city=city,
-            country=country
         )
         user.set_password(password)
         user.save(using=self.db)
@@ -38,15 +35,39 @@ class UserManger(BaseUserManager):
 class Account(AbstractBaseUser):
     email=models.CharField(max_length=150,null=True)
     firstname=models.CharField(max_length=150)
-    username=models.CharField(max_length=150,unique=True)
+    username=models.CharField(max_length=150)
     lastname=models.CharField(max_length=150)
-    city=models.CharField(max_length=50)
-    country=models.CharField(max_length=50)
-    gender=models.CharField(default="Male",max_length=10)
     is_superadmin=models.BooleanField(default=False)
     is_active =models.BooleanField(default=False)
     is_staff=models.BooleanField(default=False)
     image=models.ImageField(upload_to='user',null=True)
     USERNAME_FIELD=['username']
     Object=UserManger()
+    def __str__(self):
+        return self.username
+class UserManger(models.Manager):
+    def CreateUserProfile(self,**kwargs):
+        print(kwargs["password"])
+        UserProfile.objects.create(email=kwargs["email"],
+                                   username=kwargs["username"],
+                                   firstname=kwargs["firstname"],
+                                   lastname=kwargs["lastname"],
+                                   city=kwargs["city"],
+                                   country=kwargs["country"],
+                                   gender=kwargs["gender"],
+                                   password=kwargs["password"])
+
+
+class UserProfile(models.Model):
+    email = models.CharField(max_length=150, null=True)
+    firstname = models.CharField(max_length=150)
+    username = models.CharField(max_length=150, unique=True)
+    lastname = models.CharField(max_length=150)
+    city = models.CharField(max_length=50)
+    country = models.CharField(max_length=50)
+    gender = models.CharField(default="Male", max_length=10)
+    password=models.CharField(max_length=150,null=True)
+    objects=UserManger()
+    def __str__(self):
+        return self.username
 
