@@ -1,6 +1,6 @@
 import os.path
-
 from django.db import models
+
 from Categories.models import Category
 # Create your models here
 def Getfilename(filepath):
@@ -12,23 +12,27 @@ def UploadImage(instance,filepath):
     filename=f"{instance.id}---{instance.title}{ex}"
     return f"Product/{filename}"
 class Product(models.Model):
+    SizeRate = [
+        ('S', 'S'),
+        ('M', 'M'),
+        ('XS', 'XS'),
+        ('SM', 'SM'),
+        ('LG', 'LG'),
+        ('XXL', 'XXL')
+    ]
     Rate = [
         ('High', 'High'),
         ('Low', 'Low'),
         ('Affordable', 'Affordable')
     ]
-    SizeRate=[
-            ('XS', 'XS'),
-            ('SM', 'SM'),
-            ('LG', 'LG'),
-            ('XXL', 'XXL')
-    ]
     title=models.CharField(max_length=150)
-    image=models.ImageField(upload_to=UploadImage,null=True)
+    image=models.ImageField(upload_to='Photos/Product/',null=True)
     description=models.CharField(max_length=150)
     price=models.IntegerField(default=0,null=True,blank=True)
     rate=models.CharField(choices=Rate,max_length=50,null=True,blank=True)
-    size=models.CharField(choices=SizeRate,blank=True,null=True,max_length=50)
+    ProSize=models.CharField(choices=SizeRate,max_length=50,null=True)
+
+
 
     def __str__(self):
         return self.title
