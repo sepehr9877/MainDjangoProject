@@ -10,6 +10,8 @@ class Category(models.Model):
         ('Pants', 'Pants'),
         ('Accessories', 'Accessories'),
         ('Bags', 'Bags'),
+        ('Shoes','Shoes'),
+        ('Jacket','Jacket')
     ]
 
     ParentCategory=models.CharField(choices=Choices,max_length=50,null=True,blank=True)
