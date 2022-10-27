@@ -1,5 +1,6 @@
 import os.path
 from django.db import models
+from django.db.models import Q
 
 from Categories.models import Category
 # Create your models here
@@ -17,6 +18,7 @@ class ProductMange(models.Manager):
         for dictionary in Queryset_dictionary:
             for key in dictionary:
                 itemlist.append(dictionary.get(key))
+        itemlist=set(itemlist)
         return itemlist
 class Product(models.Model):
     SizeRate = [
@@ -44,8 +46,14 @@ class Product(models.Model):
 
     def __str__(self):
         return self.title
+class ProductDetail_Manger(models.Manager):
+    def Searhcitem(self,name):
+        serachitem=ProductDetail.objects.filter(Pro_Detail__title__contains=name)
+        print(serachitem)
+        return serachitem
 class ProductDetail(models.Model):
     Pro_Detail=models.ForeignKey(Product,on_delete=models.CASCADE)
     Pro_Cat=models.ForeignKey(Category,on_delete=models.CASCADE)
+    objects=ProductDetail_Manger()
     def __str__(self):
         return  self.Pro_Detail.title +self.Pro_Cat.ParentCategory
