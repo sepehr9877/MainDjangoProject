@@ -11,6 +11,13 @@ def UploadImage(instance,filepath):
     name,ex=Getfilename(filepath)
     filename=f"{instance.id}---{instance.title}{ex}"
     return f"Product/{filename}"
+class ProductMange(models.Manager):
+    def get_valueslist(self,Queryset_dictionary):
+        itemlist=[]
+        for dictionary in Queryset_dictionary:
+            for key in dictionary:
+                itemlist.append(dictionary.get(key))
+        return itemlist
 class Product(models.Model):
     SizeRate = [
         ('S', 'S'),
@@ -31,6 +38,7 @@ class Product(models.Model):
     price=models.IntegerField(default=0,null=True,blank=True)
     rate=models.CharField(choices=Rate,max_length=50,null=True,blank=True)
     ProSize=models.CharField(choices=SizeRate,max_length=50,null=True)
+    objects=ProductMange()
 
 
 
