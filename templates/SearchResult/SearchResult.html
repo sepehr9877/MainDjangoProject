@@ -19,7 +19,7 @@
 			<div class="card-body">
 
 				<ul class="list-menu">
-                    {% for category in ParentCategory %}
+                    {% for category in Categories %}
 				<li><a href="">{{ category.ParentCategory }}  </a></li>
                     {% endfor %}
 				</ul>
@@ -36,7 +36,7 @@
 		</header>
 		<div class="filter-content collapse show" id="collapse_4" style="">
 			<div class="card-body">
-                {% for size in SizeRanges %}
+                {% for size in SizeRates %}
 			  <label class="checkbox-btn">
 			    <input type="checkbox">
 			    <span class="btn btn-light"> {{ size }} </span>
@@ -95,7 +95,7 @@
 
 <header class="border-bottom mb-4 pb-3">
 		<div class="form-inline">
-			<span class="mr-md-auto">{{ page_obj.count }} Items found </span>
+			<span class="mr-md-auto">{{ Counts }} Items found </span>
 
 		</div>
 </header><!-- sect-heading -->

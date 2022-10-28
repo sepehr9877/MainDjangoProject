@@ -11,13 +11,24 @@ class searchview(ListView):
     paginate_by = 3
     count=None
     def get_queryset(self):
-        if self.request.GET:
-            name=self.request.GET.get('q')
-            results=ProductDetail.objects.Searhcitem(name)
-            self.count=results.count()
-            return results
-        return ProductDetail.objects.all()
-    
+        name=self.request.GET.get('q')
+        if name is None:
+            self.count=ProductDetail.objects.all().count()
+            return ProductDetail.objects.all()
+        else:
+            self.count=ProductDetail.objects.Searhcitem(name).count()
+            return ProductDetail.objects.Searhcitem(name)
+
+
+    def get_context_data(self, *args, **kwargs):
+        context=super(searchview,self).get_context_data(*args,**kwargs)
+        categories=Category.objects.filter(Parentitem=None).distinct()
+        SizeRates=Product.objects.get_valueslist(Product.objects.values('ProSize'))
+        context['Categories']=categories
+        context['SizeRates']=SizeRates
+        context['Counts']=self.count
+        return context
+
 
 # def ResultPage(request):
 #
