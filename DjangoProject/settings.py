@@ -40,7 +40,8 @@ INSTALLED_APPS = [
     'Account',
     'Product',
     'Categories',
-    'SizeColor'
+    'SizeColor',
+    'Comments'
 
 ]
 

@@ -70,7 +70,23 @@ class ProductDetailView(DetailView):
         return queryset
     def get_context_data(self,*args, **kwargs):
         context=super(ProductDetailView, self).get_context_data(*args,**kwargs)
+        productid=ProductDetail.objects.filter(id=self.ID).values('Pro_Detail_id')
 
-        context['pro_cat']=ProductDetail.objects.filter(id=self.ID)._values('Pro_size__SizeRate')
-        print(ProductDetail.objects.filter(id=self.ID).values('Pro_size__SizeRate'))
+        print(productid)
+        p_id=[]
+        for item in productid:
+            for key in item:
+                p_id.append(item.get(key))
+        selected_size=ProductDetail.objects.filter(Pro_Detail_id=p_id[0]).values('Pro_size__SizeRate')
+        selected_size_list=[]
+        for item in selected_size:
+            for key in item:
+                selected_size_list.append(item.get(key))
+        context['pro_sizes']=selected_size_list
+        selected_color=ProductDetail.objects.filter(Pro_Detail_id=p_id[0]).values('Pro_color__SizeRate')
+        color_rates=[]
+        for item in selected_color:
+            for key in item:
+                color_rates.append(item.get(key))
+        context['color_rates']=color_rates
         return context

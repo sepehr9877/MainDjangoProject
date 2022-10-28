@@ -32,18 +32,11 @@
 		<div class="item-option-select">
 			<h6>Choose Color</h6>
 			<div class="btn-group btn-group-sm btn-group-toggle" data-toggle="buttons">
+                {% for color in color_rates %}
 			  <label class="btn btn-light">
-			    <input type="radio" name="radio_color"> Silver
+			    <input type="radio" name="radio_color"> {{ color }}
 			  </label>
-			  <label class="btn btn-light">
-			    <input type="radio" name="radio_color" > Gray
-			  </label>
-			  <label class="btn btn-light active">
-			    <input type="radio" name="radio_color checked"> Gold
-			  </label>
-			  <label class="btn btn-light">
-			    <input type="radio" name="radio_color"> Black
-			  </label>
+                {% endfor %}
 			</div>
 		</div>
 	</div> <!-- row.// -->
@@ -51,18 +44,12 @@
 		<div class="item-option-select">
 			<h6>Select Size</h6>
 			<div class="btn-group btn-group-sm btn-group-toggle" data-toggle="buttons">
+                {% for size in pro_sizes %}
 			  <label class="btn btn-light">
-			    <input type="radio" name="radio_color"> S
+			    <input type="radio" name="radio_color"> {{ size }}
 			  </label>
-			  <label class="btn btn-light active">
-			    <input type="radio" name="radio_color" checked> M
-			  </label>
-			  <label class="btn btn-light">
-			    <input type="radio" name="radio_color"> L
-			  </label>
-			  <label class="btn btn-light">
-			    <input type="radio" name="radio_color"> XL
-			  </label>
+                {% endfor %}
+
 			</div>
 		</div>
 	</div> <!-- row.// -->
@@ -76,36 +63,7 @@
 
 <br>
 
-<div class="row">
-			<div class="col-md-9">
-
-	<header class="section-heading">
-		<h3>Customer Reviews </h3>
-
-	</header>
-
-	<article class="box mb-3">
-		<div class="icontext w-100">
-			<img src="./images/avatars/avatar1.jpg" class="img-xs icon rounded-circle">
-			<div class="text">
-				<span class="date text-muted float-md-right">24.04.2020 </span>
-				<h6 class="mb-1">Mike John </h6>
-
-			</div>
-		</div> <!-- icontext.// -->
-		<div class="mt-3">
-			<p>
-				Dummy comment Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
-				tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
-				quis nostrud exercitation ullamco laboris nisi ut aliquip
-			</p>
-		</div>
-	</article>
-
-
-
-	</div> <!-- col.// -->
-</div> <!-- row.// -->
+{% include 'DetailView/ReviewSection.html' %} <!-- row.// -->
 
 
 </div> <!-- container .//  -->
