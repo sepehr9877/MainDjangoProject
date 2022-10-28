@@ -1,9 +1,10 @@
+
 {% load static %}
 <!DOCTYPE HTML>
 <html lang="en">
 {% include 'header/HeaderRef.html' %}
 <body>
-{% include 'header/Header.html' %}
+{% include 'header/Header.html' with categories=categories %}
 {% block content %}
 {% endblock %}
 {% include 'Footer/Footer.html' %}
