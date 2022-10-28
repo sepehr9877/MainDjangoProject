@@ -1,6 +1,9 @@
 from django.db import models
 
 # Create your models here.
+from django.urls import reverse
+
+
 class Category(models.Model):
     Choices=[
         ('Man','Man'),
@@ -24,3 +27,7 @@ class Category(models.Model):
             fullpath.append(parent.ParentCategory)
             parent=parent.Parentitem
         return '->'.join(fullpath[::-1])
+    def pass_value_to_url(self,name):
+        return reverse('CategorySearch',args=name)
+    def pass_parentname_url(self):
+        return reverse('CategorySearch',args=[self.ParentCategory])

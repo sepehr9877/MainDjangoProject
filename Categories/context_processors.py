@@ -7,4 +7,7 @@ def CategoriesItem(request):
     for category in categories:
         for key in category:
             category_item.append(category.get(key))
-    return {"CategoriesItem": set(category_item)}
+    return dict(CategoriesItem=set(category_item))
+def getGategroyName(name):
+    Category.pass_value_to_url(name)
+    pass
