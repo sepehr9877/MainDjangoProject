@@ -1,7 +1,8 @@
 import os.path
 from django.db import models
 from django.db.models import Q
-
+from django.urls import reverse
+from SizeColor.models import Sizes,Colors
 from Categories.models import Category
 # Create your models here
 def Getfilename(filepath):
@@ -21,14 +22,7 @@ class ProductMange(models.Manager):
         itemlist=set(itemlist)
         return itemlist
 class Product(models.Model):
-    SizeRate = [
-        ('S', 'S'),
-        ('M', 'M'),
-        ('XS', 'XS'),
-        ('SM', 'SM'),
-        ('LG', 'LG'),
-        ('XXL', 'XXL')
-    ]
+
     Rate = [
         ('High', 'High'),
         ('Low', 'Low'),
@@ -39,7 +33,6 @@ class Product(models.Model):
     description=models.CharField(max_length=150)
     price=models.IntegerField(default=0,null=True,blank=True)
     rate=models.CharField(choices=Rate,max_length=50,null=True,blank=True)
-    ProSize=models.CharField(choices=SizeRate,max_length=50,null=True)
     objects=ProductMange()
 
 
@@ -54,6 +47,10 @@ class ProductDetail_Manger(models.Manager):
 class ProductDetail(models.Model):
     Pro_Detail=models.ForeignKey(Product,on_delete=models.CASCADE)
     Pro_Cat=models.ForeignKey(Category,on_delete=models.CASCADE)
+    Pro_size=models.ForeignKey(Sizes,on_delete=models.CASCADE,null=True,blank=True)
+    Pro_color=models.ForeignKey(Colors,on_delete=models.CASCADE,null=True,blank=True)
     objects=ProductDetail_Manger()
+    def pass_value_to_url(self):
+        return reverse('ProductDetailView',args=[self.id])
     def __str__(self):
         return  self.Pro_Detail.title +self.Pro_Cat.ParentCategory

@@ -20,7 +20,7 @@
 
 				<ul class="list-menu">
                     {% for category in Categories %}
-				<li><a href="">{{ category.ParentCategory }}  </a></li>
+				<li><a href="{{ category.pass_parentname_url }}">{{ category.ParentCategory }}  </a></li>
                     {% endfor %}
 				</ul>
 
@@ -39,7 +39,7 @@
                 {% for size in SizeRates %}
 			  <label class="checkbox-btn">
 			    <input type="checkbox">
-			    <span class="btn btn-light"> {{ size }} </span>
+			    <span class="btn btn-light"> {{ size}} </span>
 			  </label>
                 {% endfor %}
 		</div><!-- card-body.// -->
@@ -114,7 +114,7 @@
 						<span class="price">${{ product.Pro_Detail.price }}</span>
 					</div> <!-- price-wrap.// -->
 				</div>
-				<a href="#" class="btn btn-block btn-primary">Add to cart </a>
+				<a href="{{ product.pass_value_to_url }}" class="btn btn-block btn-primary">Add to cart </a>
 			</figcaption>
 		</figure>
 	</div>
