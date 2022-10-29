@@ -70,7 +70,9 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
-                'Categories.context_processors.CategoriesItem'
+                'Categories.context_processors.CategoriesItem',
+                'Comments.context_processors.passform',
+                'Comments.context_processors.pass_all_comments'
 
 
             ],

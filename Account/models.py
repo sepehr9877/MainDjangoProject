@@ -1,3 +1,5 @@
+import os.path
+
 from django.contrib.auth.base_user import BaseUserManager,AbstractBaseUser
 from django.db import models
 # Create your models here.
@@ -67,6 +69,7 @@ class UserProfile(models.Model):
     country = models.CharField(max_length=50)
     gender = models.CharField(default="Male", max_length=10)
     password=models.CharField(max_length=150,null=True)
+    image=models.ImageField(upload_to='userprofile',default=os.path.join('defaultuser/user.jpg'))
     objects=UserManger()
     def __str__(self):
         return self.username
