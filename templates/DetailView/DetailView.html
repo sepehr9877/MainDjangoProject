@@ -32,11 +32,14 @@
 		<div class="item-option-select">
 			<h6>Choose Color</h6>
 			<div class="btn-group btn-group-sm btn-group-toggle" data-toggle="buttons">
-                {% for color in color_rates %}
-			  <label class="btn btn-light">
-			    <input type="radio" name="radio_color"> {{ color }}
-			  </label>
-                {% endfor %}
+
+			  <select id="select_color" class="form-control" onchange="get_colorname();">
+              <option>Choose Your Color</option>
+                  {% for color in color_rates %}
+                <option>{{ color }}</option>
+                  {% endfor %}
+              </select>
+
 			</div>
 		</div>
 	</div> <!-- row.// -->
@@ -68,4 +71,27 @@
 
 </div> <!-- container .//  -->
 </section>
+<script>
+    function get_colorname(){
+        var select_color=document.getElementById('select_color')
+        var color_value=select_color.options[select_color.selectedIndex].value
+        callajax_filtering(color_value)
+    }
+    function callajax_filtering(color){
+        $.ajax(
+            {
+                url: '/filtering/'+color,
+                date: {
+                    'color': color
+                },
+                success: function (data) {
+                    if (data.is_present) {
+                        alert("A user with this username already exists.");
+                    }
+                }
+            }
+        )
+
+    }
+</script>
 {% endblock %}
