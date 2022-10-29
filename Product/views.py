@@ -1,4 +1,5 @@
 from django.core.paginator import Paginator
+from django.http import JsonResponse
 from django.shortcuts import render, redirect
 from django.views.generic import ListView, TemplateView, DetailView
 
@@ -88,5 +89,18 @@ class ProductDetailView(DetailView):
         for item in selected_color:
             for key in item:
                 color_rates.append(item.get(key))
-        context['color_rates']=color_rates
+        context['color_rates']=set(color_rates)
+        print(color_rates)
         return context
+class Filtering(DetailView):
+    def get(self, request, *args, **kwargs):
+        color=self.request.GET.get('color')
+        print(color)
+        pass
+def filter(request,**kwargs):
+    print("request")
+    print(kwargs['color'])
+    data = {
+        'is_present': True
+    }
+    return JsonResponse(data)
