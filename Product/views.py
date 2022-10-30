@@ -1,3 +1,5 @@
+from json import dumps
+
 from django.core.paginator import Paginator
 from django.http import JsonResponse
 from django.shortcuts import render, redirect
@@ -84,7 +86,7 @@ class ProductDetailView(DetailView):
             for key in item:
                 selected_size_list.append(item.get(key))
         context['pro_sizes']=selected_size_list
-        selected_color=ProductDetail.objects.filter(Pro_Detail_id=p_id[0]).values('Pro_color__SizeRate')
+        selected_color=ProductDetail.objects.filter(Pro_Detail_id=p_id[0]).values('Pro_color__Color_Rate')
         color_rates=[]
         for item in selected_color:
             for key in item:
@@ -95,11 +97,20 @@ class ProductDetailView(DetailView):
 class Filtering(DetailView):
     def get(self, request, *args, **kwargs):
         color=self.request.GET.get('color')
-        print(color)
-        pass
-def filter(request,**kwargs):
+        ProductID=self.request.GET.get('ProductID')
+        SelectedSize=ProductDetail.objects.filter(Pro_Detail_id=ProductID,Pro_color__Color_Rate=color).values('Pro_size__SizeRate')
+        listsize=ProductDetail.objects.convert_value_to_list(SelectedSize)
+        JsonData={
+            "ListSize":listsize
+        }
+        JsonData=dumps(JsonData)
+        print(JsonData)
+        return render(request,'DetailView/DetailView.html',{'data':JsonData})
+
+def filter(request):
     print("request")
-    print(kwargs['color'])
+    print(request.GET.get('color'))
+
     data = {
         'is_present': True
     }

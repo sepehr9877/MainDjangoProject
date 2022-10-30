@@ -80,15 +80,19 @@
     function callajax_filtering(color){
         $.ajax(
             {
-                url: '/filtering/'+color,
-                date: {
-                    'color': color
+                url: '/Filtering/',
+                data:{
+                    color:color,
+                    ProductID:{{ productdetail.Pro_Detail.id }}
                 },
-                success: function (data) {
-                    if (data.is_present) {
-                        alert("A user with this username already exists.");
-                    }
+                success:function (){
+                    var data=JSON.parse("{{ data|escapejs }}")
+                    for(var x in data){
+                            console.log(x)
+                        }
                 }
+
+
             }
         )
 

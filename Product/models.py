@@ -44,6 +44,12 @@ class ProductDetail_Manger(models.Manager):
         serachitem=ProductDetail.objects.filter(Pro_Detail__title__contains=name)
         print(serachitem)
         return serachitem
+    def convert_value_to_list(self,QuerySetDictionary):
+        list_vlaue=[]
+        for dictionary in QuerySetDictionary:
+            for key in dictionary:
+                list_vlaue.append(dictionary.get(key))
+        return list_vlaue
 class ProductDetail(models.Model):
     Pro_Detail=models.ForeignKey(Product,on_delete=models.CASCADE)
     Pro_Cat=models.ForeignKey(Category,on_delete=models.CASCADE)
