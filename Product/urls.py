@@ -5,5 +5,5 @@ urlpatterns=[
     path('Category/<slug:CategoryName>',CategorySearch.as_view(),name="CategorySearch"),
     path('ProductDetail/<int:ID>',ProductDetailView.as_view(),name="ProductDetailView"),
     path("Filtering/",Filtering.as_view()),
-    path("filtering/<color>",filter,name="filtering")
+    path("filtering/",filter,name="filtering")
 ]

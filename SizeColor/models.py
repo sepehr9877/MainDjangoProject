@@ -23,6 +23,6 @@ class Colors(models.Model):
         ('brown', 'brown'),
         ('white', 'white')
     ]
-    SizeRate=models.CharField(choices=ColorRate,max_length=50)
+    Color_Rate=models.CharField(choices=ColorRate, max_length=50)
     def __str__(self):
-        return self.SizeRate
+        return self.Color_Rate
