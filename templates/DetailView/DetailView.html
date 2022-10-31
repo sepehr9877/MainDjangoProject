@@ -43,22 +43,19 @@
 			</div>
 		</div>
 	</div> <!-- row.// -->
-	<div class="row">
+	<div class="row" id="maindivsize" hidden>
 		<div class="item-option-select">
 			<h6>Select Size</h6>
 			<div class="btn-group btn-group-sm btn-group-toggle" id="div_size" data-toggle="buttons">
-{#            <select onchange="selectingsize()" id="selectsize" class="form-control">#}
-{#                <option >Choose your Size</option>#}
-{#                {% for size in pro_sizes %}#}
-{#                <option >{{ size }}</option>#}
-{#                {% endfor %}#}
-{#            </select>#}
 
 			</div>
 		</div>
 	</div> <!-- row.// -->
 	<hr>
-	<a href="./product-detail.html" class="btn  btn-primary"> <span class="text">Add to cart</span> <i class="fas fa-shopping-cart"></i>  </a>
+
+        <button id="CartButton" onclick="click_addtocart()" class="btn btn-primary btn-block" hidden>Add To Cart</button>
+
+{#	<a href="./product-detail.html" class="btn  btn-primary"> <span class="text">Add to cart</span> <i class="fas fa-shopping-cart"></i>  </a>#}
 </article> <!-- product-info-aside .// -->
 		</main> <!-- col.// -->
 	</div> <!-- row.// -->
@@ -76,9 +73,20 @@
     function get_colorname(){
         var select_color=document.getElementById('select_color')
         var color_value=select_color.options[select_color.selectedIndex].value
-        delete_all_size()
-        callajax_filtering(color_value)
+        if(color_value!="Choose Your Color"){
+            unhiddensize()
+            delete_all_size()
+            callajax_filtering(color_value)
+        }
+        else{
+            alert("Please Choose the Proper Color")
+        }
 
+
+    }
+    function unhiddensize(){
+        var size=document.getElementById('maindivsize')
+        size.hidden=false
     }
     function callajax_filtering(color){
         $.ajax(
@@ -90,8 +98,8 @@
                 },
                 success:function (response){
                     if(response.sizerange){
-                        var items=JSON.parse(response.sizerange)
-                        editing_size(items)
+                        var sizeitems=JSON.parse(response.sizerange)
+                        editing_size(sizeitems,color)
                     }
                 }
             }
@@ -107,20 +115,19 @@
         }
 
     }
-    function editing_size(items){
+    function editing_size(sizeitems,coloritems){
         var select_element=document.createElement('select')
-        select_element.onchange=selectingsize()
+        select_element.setAttribute('onchange','selectingsize();')
         select_element.id="selectsize"
         select_element.className="form-control"
         var choose_option=document.createElement('option')
         choose_option.text="Choose Your Size"
         select_element.appendChild(choose_option)
-        console.log(items)
-        for(item in items){
-            console.log(items[item])
+        console.log(sizeitems)
+        for(item in sizeitems){
             var options=document.createElement('option')
-            options.value=items[item]
-            options.innerHTML=items[item]
+            options.value=sizeitems[item]
+            options.innerHTML=sizeitems[item]
             select_element.appendChild(options)
         }
         var div=document.getElementById('div_size')
@@ -131,7 +138,40 @@
 
     }
     function selectingsize(){
+        var sizeoptions=document.getElementById("selectsize")
+        var sizevalue=sizeoptions.options[sizeoptions.selectedIndex].value
+        var CartButton=document.getElementById("CartButton")
+        if(sizevalue=="Choose Your Color"){
+            alert("Please Choose the Proper size")
+            CartButton.hidden=true
+        }
+        else{
+            CartButton.hidden=false
 
+
+        }
     }
+    function click_addtocart(){
+        var selectedsize=document.getElementById('selectsize')
+        var value_size=selectedsize.options[selectedsize.selectedIndex].value
+        var selectedcolor=document.getElementById('select_color')
+        var value_color=selectedcolor.options[selectedcolor.selectedIndex].value
+        if((value_color=="Choose Your Color")||(value_size=="Choose Your Color")){
+            alert("Please Choose Correct Values")
+        }
+        else{
+            $.ajax(
+                {
+                    url: '/CreatingOrder/',
+                    data:{
+                        color_value:value_color,
+                        productid:{{ productdetail.Pro_Detail.id }},
+                        size_value:value_size
+                    }
+                }
+            )
+        }
+
+        }
 </script>
 {% endblock %}
