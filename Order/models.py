@@ -1,9 +1,9 @@
 from django.db import models
-from Account.models import UserProfile
+from Account.models import Account
 from Product.models import ProductDetail
 # Create your models here.
 class Order(models.Model):
-    UserOder=models.ForeignKey(UserProfile,on_delete=models.CASCADE)
+    UserOder=models.ForeignKey(Account,on_delete=models.CASCADE)
     PriceOrder=models.IntegerField(null=True,blank=True)
     OrderDate=models.DateTimeField(auto_now_add=True)
     def __str__(self):

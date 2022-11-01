@@ -3,10 +3,9 @@ from django.shortcuts import render
 from Product.models import ProductDetail
 # Create your views here.
 from .models import OrderDetail,Order
-from django.views.generic import CreateView
+from django.views.generic import CreateView, ListView, DetailView
 
-def Creating(request):
-    print(request.GET.get('selected_color'))
+
 class CreatingOrder(CreateView):
     Orderdetail=None
     def get(self, request, *args, **kwargs):
@@ -48,5 +47,13 @@ class CreatingOrder(CreateView):
             return False
         else:
             return True
+
+class CartPage(DetailView):
+    template_name = 'Order/CartPage.html'
+    def get_object(self, queryset=None):
+        queryset=OrderDetail.objects.filter(orderdetail__UserOder_id=3)
+        return queryset
+
+
 
 
