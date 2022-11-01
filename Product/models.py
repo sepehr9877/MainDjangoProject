@@ -33,6 +33,7 @@ class Product(models.Model):
     description=models.CharField(max_length=150)
     price=models.IntegerField(default=0,null=True,blank=True)
     rate=models.CharField(choices=Rate,max_length=50,null=True,blank=True)
+    brand=models.CharField(max_length=50,default="Tommy")
     objects=ProductMange()
 
 
