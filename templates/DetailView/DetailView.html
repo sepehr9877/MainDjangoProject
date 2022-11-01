@@ -167,6 +167,11 @@
                         color_value:value_color,
                         productid:{{ productdetail.Pro_Detail.id }},
                         size_value:value_size
+                    },
+                    success:function (response){
+                        if(response.isCreated==true){
+                            window.location.href="/"
+                        }
                     }
                 }
             )
