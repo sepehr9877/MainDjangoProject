@@ -25,7 +25,7 @@
 		<figure class="itemside align-items-center">
 			<div class="aside"><img src="{{ itemorder.productorder.Pro_Detail.image.url }}" class="img-sm"></div>
 			<figcaption class="info">
-				<a href="#" class="title text-dark">{{itemorder.productorder.Pro_Detail.title  }}</a>
+				<a id="selectedproduct{{ forloop.counter }}" title="{{ itemorder.productorder.id }}" class="title text-dark">{{itemorder.productorder.Pro_Detail.title  }}</a>
 				<p class="text-muted small">Size: {{ itemorder.productorder.Pro_size.SizeRate }} <br> Brand: {{ itemorder.productorder.Pro_Detail.brand }}</p>
 			</figcaption>
 		</figure>
@@ -51,7 +51,7 @@
 		</div> <!-- price-wrap .// -->
 	</td>
 	<td class="text-right">
-	<button onclick="RemoveButton()" class="btn btn-danger"> Remove</button>
+	<button id="RemoveB" onclick="RemoveButton({{ forloop.counter }})" class="btn btn-danger"> Remove</button>
 	</td>
 </tr>
 {% endfor %}
@@ -136,6 +136,14 @@ function plusbutton(count){
         total.innerHTML=parseInt(totalsum.title)-10+"$"
         total.title=parseInt(totalsum.title)-10
     }
+
+}
+function RemoveButton(count){
+    console.log("enter")
+    var selectedproduct=document.getElementById('selectedproduct'+count)
+    var productid=parseInt(selectedproduct.title)
+    window.location.href="/Remove/"+productid
+
 
 }
 </script>

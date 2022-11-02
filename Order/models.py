@@ -17,3 +17,19 @@ class OrderDetail(models.Model):
 
     def __str__(self):
         return self.orderdetail.UserOder.user.username +"____"+self.productorder.Pro_Detail.title+"_____"+self.productorder.Pro_color.Color_Rate
+class ShippingDetail(models.Model):
+    ShipOrder=models.ForeignKey(Order,on_delete=models.CASCADE)
+    firstname = models.CharField(max_length=50)
+    lastname = models.CharField(max_length=50)
+    phone = models.CharField(max_length=50)
+    email = models.CharField(max_length=50)
+    Country = models.CharField(max_length=50)
+    state = models.CharField(max_length=50)
+    street = models.CharField(max_length=50)
+    building = models.CharField(max_length=50)
+    house = models.CharField(max_length=50)
+    postalcode = models.CharField(max_length=50)
+    zip = models.CharField(max_length=50)
+
+    def __str__(self):
+        return self.ShipOrder.UserOder.user.username
