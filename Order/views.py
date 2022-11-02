@@ -109,12 +109,26 @@ class CheckCard(DetailView):
             street=deliveryform.cleaned_data['street']
             state=deliveryform.cleaned_data['state']
             postalcode=deliveryform.cleaned_data['postalcode']
-            orderuser=Order.objects.filter(UserOder_id=self.request.user.id).first()
-            createshipping=ShippingDetail.objects.create(ShipOrder_id=orderuser.id,firstname=firstname,lastname=lastname,
-                                                         email=email,phone=phone,
-                                                         zip=zip,house=house,
-                                                         building=building,street=street,
-                                                         state=state,postalcode=postalcode)
+            orderuser=Order.objects.filter(UserOder__user_id=self.request.user.id).first()
+            selected_shipping=ShippingDetail.objects.filter(ShipOrder_id=orderuser.id)
+            if(selected_shipping):
+                updateshipping = ShippingDetail.objects.filter(ShipOrder_id=orderuser.id).update( firstname=firstname,
+                                                                         lastname=lastname,
+                                                                         email=email, phone=phone,
+                                                                         zip=zip, house=house,
+                                                                         building=building, street=street,
+                                                                         state=state, postalcode=postalcode)
+            else:
+                updateshipping = ShippingDetail.objects.create(ShipOrder_id=orderuser.id,firstname=firstname,
+                                                                                                 lastname=lastname,
+                                                                                                 email=email,
+                                                                                                 phone=phone,
+                                                                                                 zip=zip, house=house,
+                                                                                                 building=building,
+                                                                                                 street=street,
+                                                                                                 state=state,
+                                                                                                 postalcode=postalcode)
+
             return redirect("/")
 
 
@@ -125,15 +139,46 @@ class CheckCard(DetailView):
         sum_order=OrderDetail.objects.filter(orderdetail__UserOder_id=account.id,purchase=False).aggregate(total_sum=Sum('productorder__Pro_Detail__price'))
         context['totalsum']=sum_order['total_sum']
         context['finalprice']=context['totalsum']-10
-        initial_data={
-            "firstname":self.request.user.username,
-            "lastname":self.request.user.last_name,
-            "email":self.request.user.email,
+        shippingdetail=ShippingDetail.objects.filter(ShipOrder__UserOder_id=account.id).first()
+        if(shippingdetail):
+            initial_data={
+                "firstname":shippingdetail.firstname,
+                "lastname":shippingdetail.lastname,
+                "email":shippingdetail.email,
+                "phone":shippingdetail.phone,
+                "postalcode":shippingdetail.postalcode,
+                "zip":shippingdetail.zip,
+                "country":shippingdetail.Country,
+                "building":shippingdetail.building,
+                "street":shippingdetail.street,
+                "state":shippingdetail.state,
+                "house":shippingdetail.house
+            }
+        else:
+            initial_data={
+                "firstname":self.request.user.username,
+                "lastname":self.request.user.last_name,
+                "email":self.request.user.email,
 
-        }
+            }
         addressform = ShippingForm(initial=initial_data)
         context['address']=addressform
         return context
+
+def Addcount(request):
+    quantity=request.GET.get("quantity")
+    productid=request.GET.get("prodcutdetailid")
+    userid=request.user.id
+    OrderDetail.objects.filter(orderdetail__UserOder__user_id=userid,productorder_id=productid).update(order_count=quantity)
+
+def ReduceCount(request):
+    quantity = request.GET.get("quantity")
+    productid = request.GET.get("prodcutdetailid")
+    userid = request.user.id
+    print("vee")
+    OrderDetail.objects.filter(orderdetail__UserOder__user_id=userid, productorder_id=productid).update(order_count=quantity)
+
+
 
 
 

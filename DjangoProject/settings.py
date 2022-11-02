@@ -42,7 +42,8 @@ INSTALLED_APPS = [
     'Categories',
     'SizeColor',
     'Comments',
-    'Order'
+    'Order',
+
 
 ]
 
@@ -73,7 +74,8 @@ TEMPLATES = [
                 'django.contrib.messages.context_processors.messages',
                 'Categories.context_processors.CategoriesItem',
                 'Comments.context_processors.passform',
-                'Comments.context_processors.pass_all_comments'
+                'Comments.context_processors.pass_all_comments',
+                'Product.context_processors.populare_product'
 
 
             ],

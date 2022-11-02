@@ -11,7 +11,7 @@ class Order(models.Model):
 class OrderDetail(models.Model):
     orderdetail=models.ForeignKey(Order,on_delete=models.CASCADE)
     productorder=models.ForeignKey(ProductDetail,on_delete=models.CASCADE)
-    order_count=models.IntegerField(max_length=5,null=True,blank=True)
+    order_count=models.IntegerField(default=1,max_length=5)
     purchase=models.BooleanField(default=False)
 
 
