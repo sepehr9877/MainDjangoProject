@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect
 from django.views.generic import CreateView
 from .context_processors import CommentForm
 from .models import Comments
+from Account.models import Account
 class AddingComment(CreateView):
     template_name = 'DetailView/ReviewSection.html'
     form_class = CommentForm
@@ -15,7 +16,8 @@ class AddingComment(CreateView):
         if validation:
             Description=commetform.cleaned_data['Description']
             user_id=self.request.user.id
-            Comments.objects.create(User_Comment_id=3,Description=Description)
+            selected_account=Account.objects.filter(user_id=user_id).first()
+            Comments.objects.create(User_Comment_id=selected_account.id,Description=Description)
             return redirect(f'/ProductDetail/{self.productid}')
     def form_valid(self, form):
         if form.is_valid():

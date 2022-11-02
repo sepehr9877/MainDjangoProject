@@ -1,5 +1,5 @@
 from django.db import models
-from Account.models import Account
+from Account.models import Account,User
 # Create your models here.
 class Comments(models.Model):
     User_Comment=models.ForeignKey(Account,on_delete=models.CASCADE)

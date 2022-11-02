@@ -1,60 +1,74 @@
+from django.contrib.auth import authenticate, login
 from django.contrib.auth.models import User
 from django.shortcuts import render, redirect
 from django.views.generic import CreateView, FormView
 
-from .forms import RegistrationForm,LoginForm
+from .forms import Registerform,LoginForm
 from .models import Account
-def Registration(request):
-    userid=request.user.id
-    # if User.is_authenticated:
-    #     return redirect("/")
-    if request.method=="POST":
-        Register_form=RegistrationForm(data=request.POST or request.GET)
-        if Register_form.is_valid():
-            firstname=Register_form.cleaned_data['username']
-            lastname=Register_form.cleaned_data['lastname']
-            gender=Register_form.cleaned_data['gender']
-            country=Register_form.cleaned_data['country']
-            city=Register_form.cleaned_data['city']
-            password=Register_form.cleaned_data['password']
-            email=Register_form.cleaned_data['email']
-            repassword=Register_form.cleaned_data['Repassword']
-            print(repassword)
-            User_Account=Account.Object.create_user(username=firstname,
-                                                    firstname=firstname,
-                                                    lastname=lastname,
-                                                    email=email,
-                                                    password=password,
-                                                    gender=gender,
-                                                    city=city,
-                                                    country=country)
+class RegisterPage(FormView):
+    template_name = 'Login_Reg/Registration.html'
+    registerform = Registerform
+    def get(self, request, *args, **kwargs):
+        if(self.request.user.is_authenticated):
+            return redirect("/")
+        else:
+            return render(request=self.request,template_name=self.template_name,context={"Registration":Registerform()})
 
-    else:
-        Register_form=RegistrationForm()
-    context={"Registration":Register_form,}
-    return render(request,"Login_Reg/Registration.html",context)
+    def post(self, request, *args, **kwargs):
+        register_form=Registerform(data=self.request.POST)
+        if(self.form_valid(form=register_form)):
+            username=register_form.cleaned_data['username']
+            lastname=register_form.cleaned_data['lastname']
+            password=register_form.cleaned_data['password']
+            gender=register_form.cleaned_data['gender']
+            country=register_form.cleaned_data['country']
+            city=register_form.cleaned_data['city']
+            email=register_form.cleaned_data['email']
+            repassword=register_form.cleaned_data['repassword']
+            created_user=User.objects.create_user(username=username,email=email,password=password)
+            created_user.is_staff=True
+            created_user.first_name=username
+            created_user.last_name=lastname
+            created_account=Account.objects.create(user_id=created_user.id,city=city,country=country,gender=gender)
+            created_user.save()
+            return redirect("/")
+
+
+    def form_valid(self, form):
+        if(form.is_valid()):
+            return True
+        else:
+            return False
+
 class LoginPage(FormView):
     template_name = 'Login_Reg/loginpage.html'
     form_class = LoginForm
+    def get(self, request, *args, **kwargs):
+        if(self.request.user.is_authenticated):
+            print(self.request.user.username)
+            return redirect("/")
+        else:
+            return render(request=self.request,template_name=self.template_name,context={"loginform":LoginForm})
     def post(self, request, *args, **kwargs):
         request=self.request
         log_form=LoginForm(data=request.POST)
-        print(log_form.errors)
         if(self.form_valid(form=log_form)):
-            print("eee")
             username=log_form.cleaned_data.get("UserName")
             password=log_form.cleaned_data.get("Password")
+            user=authenticate(self.request,username=username,password=password)
+            if user is not None:
 
+                login(self.request,user)
+                print(self.request.user.username)
+                return redirect("/")
+            else:
+                raise ValueError("You Dont Have An Account")
     def form_valid(self, form):
         if form.is_valid():
             return True
         else:
             return False
 
-    def get_context_data(self, *args,**kwargs):
-        context=super(LoginPage, self).get_context_data(*args,**kwargs)
-        context['loginform']=LoginPage()
-        return context
 
 
 # Create your views here.
