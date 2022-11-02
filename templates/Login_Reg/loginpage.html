@@ -10,10 +10,10 @@
       <form method="post" action="/LoginPage">
           {% csrf_token %}
           <div class="form-group">
-			 {{ loginform.form_class.UserName }}
+			 {{loginform.UserName}}
           </div> <!-- form-group// -->
           <div class="form-group">
-			{{  loginform.form_class.Password}}
+			{{  loginform.Password}}
           </div> <!-- form-group// -->
 
           <div class="form-group">

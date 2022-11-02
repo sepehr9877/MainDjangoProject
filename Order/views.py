@@ -1,10 +1,11 @@
+from django.db.models import Sum
 from django.http import JsonResponse
 from django.shortcuts import render
 from Product.models import ProductDetail
 # Create your views here.
 from .models import OrderDetail,Order
 from django.views.generic import CreateView, ListView, DetailView
-
+from Account.models import Account,User
 
 class CreatingOrder(CreateView):
     Orderdetail=None
@@ -23,10 +24,11 @@ class CreatingOrder(CreateView):
         return JsonResponse(data,safe=False)
     def create_order(self):
         userid=self.request.user.id
-        user_order=Order.objects.filter(UserOder_id=3)
+        selected_account=Account.objects.filter(user_id=userid).first()
+        user_order=Order.objects.filter(UserOder_id=selected_account.id)
         print(user_order)
         if len(user_order)==0:
-            user_order=Order.objects.create(UserOder_id=3)
+            user_order=Order.objects.create(UserOder_id=selected_account.id)
 
         return user_order
     def check_productdetail(self,productid,color,size):
@@ -51,8 +53,18 @@ class CreatingOrder(CreateView):
 class CartPage(DetailView):
     template_name = 'Order/CartPage.html'
     def get_object(self, queryset=None):
-        queryset=OrderDetail.objects.filter(orderdetail__UserOder_id=3)
+        userid=self.request.user.id
+        selected_account=Account.objects.filter(user_id=userid).first()
+        queryset=OrderDetail.objects.filter(orderdetail__UserOder_id=selected_account.id,purchase=False)
         return queryset
+    def get_context_data(self, *args,**kwargs):
+        context=super(CartPage, self).get_context_data(*args,**kwargs)
+        userid = self.request.user.id
+        selected_account = Account.objects.filter(user_id=userid).first()
+        context["totalsum"] = OrderDetail.objects.filter(orderdetail__UserOder_id=selected_account.id, purchase=False).annotate(total_sum=Sum('productorder__Pro_Detail__price')).values_list('total_sum')[0][0]
+        context['total']=context['totalsum']-10
+        return context
+
 
 
 

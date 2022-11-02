@@ -51,7 +51,7 @@
 		</div> <!-- price-wrap .// -->
 	</td>
 	<td class="text-right">
-	<a href="" class="btn btn-danger"> Remove</a>
+	<button onclick="RemoveButton()" class="btn btn-danger"> Remove</button>
 	</td>
 </tr>
 {% endfor %}
@@ -66,7 +66,7 @@
 		<div class="card-body">
 			<dl class="dlist-align">
 			  <dt>Total price:</dt>
-			  <dd class="text-right">$69.97</dd>
+			  <dd class="text-right" title="{{ totalsum }}" id="totalsum">${{ totalsum}}</dd>
 			</dl>
 			<dl class="dlist-align">
 			  <dt>Tax:</dt>
@@ -74,11 +74,11 @@
 			</dl>
 			<dl class="dlist-align">
 			  <dt>Total:</dt>
-			  <dd class="text-right text-dark b"><strong>$59.97</strong></dd>
+			  <dd class="text-right text-dark b"><strong title="{{ total }}" title="{{ total }}" id="mytotal">${{total}}</strong></dd>
 			</dl>
 			<hr>
 			<p class="text-center mb-3">
-				<img src="./images/misc/payments.png" height="26">
+				<img src="{% static "./images/misc/payments.png" %}" height="26">
 			</p>
 			<a href="./place-order.html" class="btn btn-primary btn-block"> Checkout </a>
 			<a href="./store.html" class="btn btn-light btn-block">Continue Shopping</a>
@@ -101,13 +101,20 @@ function minus_button(count){
     var quantity=document.getElementById('quantity'+count)
     var priceEl=document.getElementById('price'+count)
     var price_product=document.getElementById('product'+count)
+    var totalsum=document.getElementById('totalsum')
+    var total=document.getElementById('mytotal')
 
     if(quantity.value <= 1){
         alert("cant reduce it more")
     }
     else{
         quantity.setAttribute('value',(quantity.value)--)
+
         priceEl.innerHTML=parseInt(priceEl.innerHTML)-parseInt(price_product.title)
+        totalsum.innerHTML=parseInt(totalsum.title)-parseInt(price_product.title)+"$"
+        totalsum.title=parseInt(totalsum.title)-parseInt(price_product.title)
+        total.innerHTML=parseInt(totalsum.title)-10+"$"
+        total.title=parseInt(totalsum.title)-10
     }
 
 }
@@ -116,13 +123,18 @@ function plusbutton(count){
     var quantity=document.getElementById('quantity'+count)
     var priceEl=document.getElementById('price'+count)
     var price_product=document.getElementById('product'+count)
-    console.log(parseInt(priceEl.innerHTML)+parseInt(price_product.title))
+    var totalsum=document.getElementById('totalsum')
+    var total=document.getElementById('mytotal')
     if(quantity.value >=5){
         alert("out of stock")
     }
     else{
         quantity.setAttribute('value',(quantity.value)++)
         priceEl.innerHTML=parseInt(priceEl.innerHTML)+parseInt(price_product.title)
+        totalsum.innerHTML=parseInt(totalsum.title)+parseInt(price_product.title)+"$"
+        totalsum.title=parseInt(totalsum.title)+parseInt(price_product.title)
+        total.innerHTML=parseInt(totalsum.title)-10+"$"
+        total.title=parseInt(totalsum.title)-10
     }
 
 }
