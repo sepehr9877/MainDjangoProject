@@ -35,11 +35,11 @@
 					<div class="col">
 						<div class="input-group input-spinner">
 							<div class="input-group-prepend">
-							<button onclick="minus_button({{ forloop.counter }})" id="minusbotton" class="btn btn-light" type="button" > <i class="fa fa-minus"></i> </button>
+							<button onclick="minus_button({{ forloop.counter }},{{itemorder.productorder.id}})" id="minusbotton" class="btn btn-light" type="button" > <i class="fa fa-minus"></i> </button>
 							</div>
 							<input id="quantity{{ forloop.counter }}" type="text" class="form-control"  value="1">
 							<div class="input-group-append">
-							<button id="plusbutton" onclick="plusbutton({{ forloop.counter }})" class="btn btn-light" type="button"> <i class="fa fa-plus"></i> </button>
+							<button id="plusbutton" onclick="plusbutton({{ forloop.counter }},{{ itemorder.productorder.id }})" class="btn btn-light" type="button"> <i class="fa fa-plus"></i> </button>
 							</div>
 						</div> <!-- input-group.// -->
 					</div> <!-- col.// -->
@@ -80,7 +80,7 @@
 			<p class="text-center mb-3">
 				<img src="{% static "./images/misc/payments.png" %}" height="26">
 			</p>
-			<a href="./place-order.html" class="btn btn-primary btn-block"> Checkout </a>
+			<button onclick="checkoutbutton()" class="btn btn-primary btn-block"> Checkout </button>
 			<a href="./store.html" class="btn btn-light btn-block">Continue Shopping</a>
 		</div> <!-- card-body.// -->
 		</div> <!-- card.// -->
@@ -95,7 +95,7 @@
 </section>
 
 <script>
-function minus_button(count){
+function minus_button(count,productdetailID){
     console.log("count")
     console.log(count)
     var quantity=document.getElementById('quantity'+count)
@@ -115,10 +115,17 @@ function minus_button(count){
         totalsum.title=parseInt(totalsum.title)-parseInt(price_product.title)
         total.innerHTML=parseInt(totalsum.title)-10+"$"
         total.title=parseInt(totalsum.title)-10
+        $.ajax({
+            url:"/ReduceCount/",
+            data:{
+                quantity:quantity.value,
+                prodcutdetailid:productdetailID
+            }
+        })
     }
 
 }
-function plusbutton(count){
+function plusbutton(count,productdetailID){
 
     var quantity=document.getElementById('quantity'+count)
     var priceEl=document.getElementById('price'+count)
@@ -135,7 +142,17 @@ function plusbutton(count){
         totalsum.title=parseInt(totalsum.title)+parseInt(price_product.title)
         total.innerHTML=parseInt(totalsum.title)-10+"$"
         total.title=parseInt(totalsum.title)-10
+        $.ajax(
+        {
+            url:'/Addcount/',
+            data:{
+                quantity:quantity.value,
+                prodcutdetailid:productdetailID
+            }
+        }
+    )
     }
+
 
 }
 function RemoveButton(count){
@@ -144,6 +161,9 @@ function RemoveButton(count){
     var productid=parseInt(selectedproduct.title)
     window.location.href="/Remove/"+productid
 
+
+}
+function checkoutbutton(){
 
 }
 </script>
