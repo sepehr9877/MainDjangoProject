@@ -19,7 +19,7 @@
 				<div class="aside"><img src="{{ item.productorder.Pro_Detail.image.url }}" class="border img-sm"></div>
 				<figcaption class="info">
 					<p>{{ item.productorder.Pro_Detail.title }} </p>
-					<span class="text-muted">2x = $560 </span>
+					<span class="text-muted">{{ item.order_count }}x = ${{ item.totalpriceorder }} </span>
 				</figcaption>
 			</figure>
 		</div>

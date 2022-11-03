@@ -1,11 +1,12 @@
 from django.urls import path
-from .views import Addcount,CreatingOrder,CartPage,Removeitem,CheckCard,ReduceCount
+from .views import Addcount,CreatingOrder,CartPage,Removeitem,CheckCard,ReduceCount,AddtoCart
 urlpatterns=[
     path('CreatingOrder/',CreatingOrder.as_view()),
     path('CartPage',CartPage.as_view()),
     path('Remove/<productdetailid>',Removeitem),
     path("CheckCard",CheckCard.as_view()),
     path("Addcount/",Addcount),
-    path("ReduceCount/",ReduceCount)
+    path("ReduceCount/",ReduceCount),
+    path("AddtoCart/",AddtoCart)
 
 ]

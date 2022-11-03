@@ -6,13 +6,17 @@ class Order(models.Model):
     UserOder=models.ForeignKey(Account,on_delete=models.CASCADE)
     PriceOrder=models.IntegerField(null=True,blank=True)
     OrderDate=models.DateTimeField(auto_now_add=True)
+    transaction=models.BooleanField(default=False)
     def __str__(self):
         return self.UserOder.user.username
 class OrderDetail(models.Model):
     orderdetail=models.ForeignKey(Order,on_delete=models.CASCADE)
     productorder=models.ForeignKey(ProductDetail,on_delete=models.CASCADE)
-    order_count=models.IntegerField(default=1,max_length=5)
+    order_count=models.IntegerField(default=1)
     purchase=models.BooleanField(default=False)
+    @property
+    def totalpriceorder(self):
+        return self.productorder.Pro_Detail.price*self.order_count
 
 
     def __str__(self):
