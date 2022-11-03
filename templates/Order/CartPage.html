@@ -37,16 +37,16 @@
 							<div class="input-group-prepend">
 							<button onclick="minus_button({{ forloop.counter }},{{itemorder.productorder.id}})" id="minusbotton" class="btn btn-light" type="button" > <i class="fa fa-minus"></i> </button>
 							</div>
-							<input id="quantity{{ forloop.counter }}" type="text" class="form-control"  value="1">
+							<input id="quantity{{ forloop.counter }}" type="text" class="form-control"  value="{{ itemorder.order_count }}">
 							<div class="input-group-append">
-							<button id="plusbutton" onclick="plusbutton({{ forloop.counter }},{{ itemorder.productorder.id }})" class="btn btn-light" type="button"> <i class="fa fa-plus"></i> </button>
+							<button id="plusbutton" onclick="plusbutton({{ forloop.counter }},{{ itemorder.productorder.id }})" class="btn btn-light"> <i class="fa fa-plus"></i> </button>
 							</div>
 						</div> <!-- input-group.// -->
 					</div> <!-- col.// -->
 	</td>
 	<td>
 		<div class="price-wrap">
-			<var id="price{{ forloop.counter }}" class="price">{{ itemorder.productorder.Pro_Detail.price }}</var>
+			<var id="price{{ forloop.counter }}" class="price">{{ itemorder.totalpriceorder }}</var>
 			<small id="product{{ forloop.counter }}" title="{{ itemorder.productorder.Pro_Detail.price }}" class="text-muted"> ${{ itemorder.productorder.Pro_Detail.price }} each </small>
 		</div> <!-- price-wrap .// -->
 	</td>
@@ -95,6 +95,7 @@
 </section>
 
 <script>
+
 function minus_button(count,productdetailID){
     console.log("count")
     console.log(count)
@@ -126,7 +127,7 @@ function minus_button(count,productdetailID){
 
 }
 function plusbutton(count,productdetailID){
-
+    console.log("ccc")
     var quantity=document.getElementById('quantity'+count)
     var priceEl=document.getElementById('price'+count)
     var price_product=document.getElementById('product'+count)
@@ -163,7 +164,23 @@ function RemoveButton(count){
 
 
 }
+
 function checkoutbutton(){
+    var mytotal=document.getElementById('mytotal')
+    var value_total=parseInt(mytotal.title)
+    console.log(value_total)
+    $.ajax({
+        url:"/AddtoCart/",
+        data:{
+            totalvalue:value_total
+        },
+        success(response){
+            if(response.isChecked){
+                window.location.href="/CheckCard"
+            }
+
+        }
+    })
 
 }
 </script>

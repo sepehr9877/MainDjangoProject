@@ -28,7 +28,7 @@ class CreatingOrder(CreateView):
     def create_order(self):
         userid=self.request.user.id
         selected_account=Account.objects.filter(user_id=userid).first()
-        user_order=Order.objects.filter(UserOder_id=selected_account.id)
+        user_order=Order.objects.filter(UserOder_id=selected_account.id,transaction=False)
         print(user_order)
         if len(user_order)==0:
             user_order=Order.objects.create(UserOder_id=selected_account.id)
@@ -60,17 +60,18 @@ class CartPage(DetailView):
     def get_object(self, queryset=None):
         userid=self.request.user.id
         selected_account=Account.objects.filter(user_id=userid).first()
-        queryset=OrderDetail.objects.filter(orderdetail__UserOder_id=selected_account.id,purchase=False)
+        queryset=OrderDetail.objects.filter(orderdetail__UserOder_id=selected_account.id,orderdetail__transaction=False,purchase=False)
         return queryset
     def get_context_data(self, *args,**kwargs):
         context=super(CartPage, self).get_context_data(*args,**kwargs)
         userid = self.request.user.id
 
         selected_account = Account.objects.filter(user_id=userid).first()
-        print("selected_account")
-        print(selected_account)
-        totalprice= OrderDetail.objects.filter(orderdetail__UserOder_id=selected_account.id, purchase=False).aggregate(total_sum=Sum('productorder__Pro_Detail__price'))
-        context['totalsum']=totalprice['total_sum']
+        total_price= OrderDetail.objects.filter(orderdetail__UserOder_id=selected_account.id,orderdetail__transaction=False, purchase=False)
+        total__price=[]
+        for item in total_price:
+            total__price.append(item.totalpriceorder)
+        context['totalsum']=sum(total__price)
         context['total']=context['totalsum']-10
         return context
 
@@ -78,7 +79,7 @@ def Removeitem(request,**kwargs):
     productdetailid=kwargs['productdetailid']
     userid=request.user.id
     selected_account=Account.objects.filter(user_id=userid).first()
-    selected_order=Order.objects.filter(UserOder_id=selected_account.id).first()
+    selected_order=Order.objects.filter(UserOder_id=selected_account.id,transaction=False).first()
     selected_orderdetail=OrderDetail.objects.filter(orderdetail_id=selected_order.id,productorder_id=productdetailid).delete()
     return redirect("/CartPage")
 
@@ -89,9 +90,10 @@ class CheckCard(DetailView):
     def get_object(self, queryset=None):
         userid = self.request.user.id
         account_sl = Account.objects.filter(user_id=userid).first()
-        order_sl = Order.objects.filter(UserOder_id=account_sl.id).first()
-        order_detail = OrderDetail.objects.filter(orderdetail_id=order_sl.id, purchase=False).all()
+        order_sl = Order.objects.filter(UserOder_id=account_sl.id,transaction=False).first()
+        order_detail = OrderDetail.objects.filter(orderdetail_id=order_sl.id,purchase=False).all()
         print(order_detail)
+
         queryset=order_detail
         return queryset
     def post(self, request, *args, **kwargs):
@@ -109,7 +111,7 @@ class CheckCard(DetailView):
             street=deliveryform.cleaned_data['street']
             state=deliveryform.cleaned_data['state']
             postalcode=deliveryform.cleaned_data['postalcode']
-            orderuser=Order.objects.filter(UserOder__user_id=self.request.user.id).first()
+            orderuser=Order.objects.filter(UserOder__user_id=self.request.user.id,transaction=False).first()
             selected_shipping=ShippingDetail.objects.filter(ShipOrder_id=orderuser.id)
             if(selected_shipping):
                 updateshipping = ShippingDetail.objects.filter(ShipOrder_id=orderuser.id).update( firstname=firstname,
@@ -136,10 +138,14 @@ class CheckCard(DetailView):
         context=super(CheckCard, self).get_context_data(*args,**kwargs)
         userid=self.request.user.id
         account=Account.objects.filter(user_id=userid).first()
-        sum_order=OrderDetail.objects.filter(orderdetail__UserOder_id=account.id,purchase=False).aggregate(total_sum=Sum('productorder__Pro_Detail__price'))
-        context['totalsum']=sum_order['total_sum']
+        sum_order=OrderDetail.objects.filter(orderdetail__UserOder_id=account.id,orderdetail__transaction=False,purchase=False)
+        total_sum=[]
+        for item in sum_order:
+            total_sum.append(item.totalpriceorder)
+        context['totalsum']=sum(total_sum)
         context['finalprice']=context['totalsum']-10
-        shippingdetail=ShippingDetail.objects.filter(ShipOrder__UserOder_id=account.id).first()
+        shippingdetail=ShippingDetail.objects.filter(ShipOrder__UserOder_id=account.id,ShipOrder__transaction=True).first()
+
         if(shippingdetail):
             initial_data={
                 "firstname":shippingdetail.firstname,
@@ -169,14 +175,27 @@ def Addcount(request):
     quantity=request.GET.get("quantity")
     productid=request.GET.get("prodcutdetailid")
     userid=request.user.id
-    OrderDetail.objects.filter(orderdetail__UserOder__user_id=userid,productorder_id=productid).update(order_count=quantity)
+    print(quantity)
+    OrderDetail.objects.filter(orderdetail__UserOder__user_id=userid,orderdetail__transaction=False,productorder_id=productid).update(order_count=quantity)
 
 def ReduceCount(request):
     quantity = request.GET.get("quantity")
     productid = request.GET.get("prodcutdetailid")
     userid = request.user.id
     print("vee")
-    OrderDetail.objects.filter(orderdetail__UserOder__user_id=userid, productorder_id=productid).update(order_count=quantity)
+    OrderDetail.objects.filter(orderdetail__UserOder__user_id=userid, orderdetail__transaction=False,productorder_id=productid).update(order_count=quantity)
+
+def AddtoCart(request):
+    totalprice=request.GET.get("totalvalue")
+    userid=request.user.id
+    OrderSel=Order.objects.filter(UserOder__user_id=userid,transaction=False).update(PriceOrder=totalprice)
+    isChecked=False
+    if(OrderSel):
+        isChecked=True
+    Response={
+        "isChecked":isChecked
+    }
+    return JsonResponse(data=Response,safe=False)
 
 
 
