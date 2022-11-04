@@ -1,3 +1,4 @@
+import json
 from json import dumps
 
 from django.core.paginator import Paginator
@@ -14,7 +15,10 @@ class searchview(ListView):
     template_name = 'SearchResult/SearchResult.html'
     paginate_by = 3
     count=None
+    SearchFilter=None
     def get_queryset(self):
+        if( self.SearchFilter):
+            return self.SearchFilter
         name=self.request.GET.get('q')
 
         if name is None:
@@ -112,11 +116,26 @@ class Filtering(DetailView):
 
 
 
-def filter(request):
-    print("request")
-    print(request.GET.get('color'))
-
-    data = {
-        'is_present': True
-    }
-    return JsonResponse(data)
+class SearchBySize(DetailView):
+    def get(self, request, *args, **kwargs):
+        pricerange=self.request.GET.get('max_price')
+        size=self.request.GET.get('size')
+        userid=self.request.user.id
+        print(size,pricerange)
+        selected_product=ProductDetail.objects.filter(Pro_size__SizeRate=size,Pro_Detail__price__lte=pricerange).values_list('id')
+        selected_product=list(selected_product)
+        selected_product=dumps(selected_product)
+        data={
+            "selected_products":selected_product
+        }
+        return JsonResponse(data,safe=False)
+def AssignQuerytoSearch(request):
+    ProductsIDList=request.GET.get('ProductsList')
+    print("ProductsId")
+    print(json.load(ProductsIDList))
+    listQuerySet=[]
+    for item in ProductsIDList:
+        for id in item:
+            listQuerySet.append(ProductDetail.objects.get(id=id))
+    listQuerySet=searchview.SearchFilter
+    redirect("/Search")
