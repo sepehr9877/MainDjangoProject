@@ -124,7 +124,8 @@ class SearchBySize(DetailView):
         print(size,pricerange)
         selected_product=ProductDetail.objects.filter(Pro_size__SizeRate=size,Pro_Detail__price__lte=pricerange).values_list('id')
         selected_product=list(selected_product)
-        selected_product=dumps(selected_product)
+        id_selected=[item[0] for item in selected_product ]
+        selected_product=dumps(id_selected)
         data={
             "selected_products":selected_product
         }
@@ -132,10 +133,17 @@ class SearchBySize(DetailView):
 def AssignQuerytoSearch(request):
     ProductsIDList=request.GET.get('ProductsList')
     print("ProductsId")
-    print(json.load(ProductsIDList))
+    print(ProductsIDList)
+    mylist=ProductsIDList.strip('][').split(',')
+    print(mylist)
+    print("mylist")
+    print(mylist[0])
     listQuerySet=[]
-    for item in ProductsIDList:
-        for id in item:
-            listQuerySet.append(ProductDetail.objects.get(id=id))
-    listQuerySet=searchview.SearchFilter
-    redirect("/Search")
+    for item in mylist:
+        listQuerySet.append(ProductDetail.objects.get(id=int(item)))
+    searchview.SearchFilter=listQuerySet
+    return redirect("/Search/")
+    data={
+        "isAssigned":True
+    }
+    return JsonResponse(data,safe=False)

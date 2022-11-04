@@ -171,18 +171,16 @@ function ApplyButton(){
     }
 }
 function callingSearchPage(ProductsId){
-    var productsId=[]
-    console.log("prrr")
-    console.log(ProductsId)
-    for(item in ProductsId){
-        productsId.push(ProductsId[item])
-    }
-    console.log(productsId)
     $.ajax(
         {
             url: "/AssignQuerytoSearch/",
             data:{
-                ProductsList:JSON.stringify({"productsId":productsId})
+                ProductsList:JSON.stringify(ProductsId)
+            },
+            success(response) {
+                if(response.isAssigned){
+                    window.location.href="/Search/"
+                }
             }
         }
     )
