@@ -18,3 +18,32 @@ class ShippingForm(Form):
     house=CharField(widget=TextInput(attrs={"class":"form-control"}))
     postalcode=CharField(widget=TextInput(attrs={"class":"form-control"}))
     zip=CharField(widget=TextInput(attrs={"class":"form-control"}))
+
+class CreditCardForm(Form):
+    Month=(
+        ('1',"Jan"),
+        ('2',"Feb"),
+        ('3',"Mar"),
+        ('4',"Apr"),
+        ('5','May'),
+        ('6','June'),
+        ('7','July'),
+        ('8','Aug'),
+        ('9','Sep'),
+        ('10','Oct'),
+        ('11','Nov'),
+        ('12','Dec')
+
+    )
+    cardnumber=CharField(
+        widget=TextInput(attrs={"class":"form-control mr-2","placeholder":"xxxx-xxxx-xxxx-xxxx"})
+    )
+    card_year=CharField(
+        widget=TextInput(attrs={"class":"form-control mr-2","style":"width:100px","placeholder":"YY"})
+    )
+    card_month = CharField(
+        widget=Select(attrs={"class":"form-control mr-2","style":"width:100px"},choices=Month)
+    )
+    cardcsv=CharField(
+        widget=TextInput(attrs={"class":"form-control mr-2","placeholder":"Csv","style":"width:100px","maxlength":"3"})
+    )
