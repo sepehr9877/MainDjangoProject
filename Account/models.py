@@ -10,7 +10,7 @@ class Account(models.Model):
     city = models.CharField(max_length=50,null=True,blank=True)
     country = models.CharField(max_length=50,null=True,blank=True)
     gender = models.CharField(default="Male", max_length=10)
-
+    phonenumber=models.CharField(null=True,blank=True,max_length=50)
     def __str__(self):
         return self.user.username
 

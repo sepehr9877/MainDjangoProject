@@ -14,6 +14,7 @@ class OrderDetail(models.Model):
     productorder=models.ForeignKey(ProductDetail,on_delete=models.CASCADE)
     order_count=models.IntegerField(default=1)
     purchase=models.BooleanField(default=False)
+    received=models.BooleanField(default=False)
     @property
     def totalpriceorder(self):
         return self.productorder.Pro_Detail.price*self.order_count
@@ -41,7 +42,7 @@ class CardSpecification(models.Model):
     CardOrder=models.ForeignKey(Order,on_delete=models.CASCADE)
     CardNumber=models.CharField(max_length=50)
     CsvCard=models.CharField(max_length=10)
-    CardYear=models.IntegerField(max_length=12)
-    CardMonth=models.IntegerField(max_length=12)
+    CardYear=models.IntegerField()
+    CardMonth=models.IntegerField()
     def __str__(self):
         return self.CardOrder.UserOder.user.username +"____"+ str(self.CardOrder.OrderDate.date())

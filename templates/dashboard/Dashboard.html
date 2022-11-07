@@ -56,7 +56,7 @@
 				<td>
 					<var class="price text-muted">{{ item.order_count }}*{{item.productorder.Pro_Detail.price}}$</var>
 				</td>
-				<td width="250"> <a href="#" class="btn btn-outline-primary">Track order</a> <a href="/ProductDetail/{{ item.productorder.id }}" class="btn btn-light"> Details </a> </td>
+				<td width="250"> <a  class="btn btn-outline-primary">Not Received</a> <a href="/ProductDetail/{{ item.productorder.id }}" class="btn btn-light"> Details </a> </td>
 			</tr>
             {% endfor %}
 		</table>
