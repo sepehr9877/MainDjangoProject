@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<article class="card mb-4">
+<div class="card-body">
+	<h4 class="card-title mb-4">Contact info</h4>
+	<form action="">
+		<div class="row">
+			<div class="form-group col-sm-6">
+				<label>Frst name</label>
+				{{Profile_Spec.username}}
+			</div>
+			<div class="form-group col-sm-6">
+				<label>Last name</label>
+				{{ Profile_Spec.lastname }}
+			</div>
+			<div class="form-group col-sm-6">
+				<label>Phone</label>
+				{{ Profile_Spec.phone }}
+			</div>
+			<div class="form-group col-sm-6">
+				<label>Email</label>
+				{{ Profile_Spec.email }}
+			</div>
+		</div> <!-- row.// -->
+        <div class="form-group">
+              <button type="submit" class="btn btn-primary btn-block"> Update  </button>
+          </div>
+	</form>
+</div> <!-- card-body.// -->
+</article> <!-- card.// -->
+{% endblock %}

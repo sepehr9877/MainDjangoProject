@@ -1,7 +1,9 @@
 from django.shortcuts import render
-from django.views.generic import DetailView,View
+from django.views.generic import DetailView,View,CreateView
 from Order.models import Order,OrderDetail,ShippingDetail,CardSpecification
-
+from Order.forms import ShippingForm
+from Account.models import Account
+from .forms import UpdateProfile
 # Create your views here.
 class DashBoardPage(DetailView):
     Selected_Order_user=None
@@ -19,3 +21,23 @@ class DashBoardPage(DetailView):
         context['carddetail']=CardSpecification.objects.filter(CardOrder_id=self.Selected_Order_user.id).first()
         context['total_price']=self.Selected_Order_user
         return context
+
+
+class ProfileEditPage(DetailView):
+    template_name = 'dashboard/EditProfile.html'
+    def get(self, request, *args, **kwargs):
+        account_detail=Account.objects.filter(user_id=self.request.user.id).first()
+        initial_date={
+            "username":account_detail.user.username,
+            "lastname":self.request.user.last_name,
+            "phone":account_detail.phonenumber,
+            "email":self.request.user.email
+
+
+        }
+        context={"Profile_Spec":UpdateProfile(initial=initial_date)}
+        return render(self.request,template_name=self.template_name,context=context)
+    # def get_context_data(self, *args,**kwargs):
+    #     context=super(ProfileEditPage, self).get_context_data(*args,**kwargs)
+    #     context['EditProfile']=UpdateProfile()
+    #     return context
