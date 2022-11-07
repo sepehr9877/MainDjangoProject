@@ -3,10 +3,10 @@ from django.http import JsonResponse
 from django.shortcuts import render, redirect
 from Product.models import ProductDetail
 # Create your views here.
-from .models import OrderDetail,Order,ShippingDetail
+from .models import OrderDetail,Order,ShippingDetail,CardSpecification
 from django.views.generic import CreateView, ListView, DetailView
 from Account.models import Account,User
-from .forms import ShippingForm
+from .forms import ShippingForm,CreditCardForm
 
 class CreatingOrder(CreateView):
     Orderdetail=None
@@ -92,16 +92,13 @@ class CheckCard(DetailView):
         account_sl = Account.objects.filter(user_id=userid).first()
         order_sl = Order.objects.filter(UserOder_id=account_sl.id,transaction=False).first()
         order_detail = OrderDetail.objects.filter(orderdetail_id=order_sl.id,purchase=False).all()
-        print(order_detail)
-
         queryset=order_detail
         return queryset
     def post(self, request, *args, **kwargs):
         deliveryform=ShippingForm(data=self.request.POST or None)
-        print("Post")
-        if(deliveryform.is_valid()):
+        CardDetail=CreditCardForm(data=self.request.POST or None)
+        if(deliveryform.is_valid() and CardDetail.is_valid()):
             firstname=deliveryform.cleaned_data['firstname']
-            print(firstname)
             lastname=deliveryform.cleaned_data['lastname']
             email=deliveryform.cleaned_data['email']
             phone=deliveryform.cleaned_data['phone']
@@ -111,6 +108,10 @@ class CheckCard(DetailView):
             street=deliveryform.cleaned_data['street']
             state=deliveryform.cleaned_data['state']
             postalcode=deliveryform.cleaned_data['postalcode']
+            cardnumber=CardDetail.cleaned_data['cardnumber']
+            cardmonth=CardDetail.cleaned_data['card_month']
+            cardcsv=CardDetail.cleaned_data['cardcsv']
+            cardyear=CardDetail.cleaned_data['card_year']
             orderuser=Order.objects.filter(UserOder__user_id=self.request.user.id,transaction=False).first()
             selected_shipping=ShippingDetail.objects.filter(ShipOrder_id=orderuser.id)
             if(selected_shipping):
@@ -130,6 +131,12 @@ class CheckCard(DetailView):
                                                                                                  street=street,
                                                                                                  state=state,
                                                                                                  postalcode=postalcode)
+            CardSpecification.objects.create(CardOrder_id=orderuser.id,
+                                             CardMonth=cardmonth,
+                                             CardNumber=cardnumber,
+                                             CsvCard=cardcsv,
+                                             CardYear=cardyear)
+            Order.objects.filter(UserOder__user_id=self.request.user.id,transaction=False).update(transaction=True)
 
             return redirect("/")
 
@@ -168,6 +175,7 @@ class CheckCard(DetailView):
 
             }
         addressform = ShippingForm(initial=initial_data)
+        context['CardSpec']=CreditCardForm()
         context['address']=addressform
         return context
 

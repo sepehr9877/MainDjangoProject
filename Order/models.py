@@ -8,7 +8,7 @@ class Order(models.Model):
     OrderDate=models.DateTimeField(auto_now_add=True)
     transaction=models.BooleanField(default=False)
     def __str__(self):
-        return self.UserOder.user.username
+        return self.UserOder.user.username +"___"+str(self.OrderDate.date())+"__"+str(self.transaction)
 class OrderDetail(models.Model):
     orderdetail=models.ForeignKey(Order,on_delete=models.CASCADE)
     productorder=models.ForeignKey(ProductDetail,on_delete=models.CASCADE)
@@ -37,3 +37,11 @@ class ShippingDetail(models.Model):
 
     def __str__(self):
         return self.ShipOrder.UserOder.user.username
+class CardSpecification(models.Model):
+    CardOrder=models.ForeignKey(Order,on_delete=models.CASCADE)
+    CardNumber=models.CharField(max_length=50)
+    CsvCard=models.CharField(max_length=10)
+    CardYear=models.IntegerField(max_length=12)
+    CardMonth=models.IntegerField(max_length=12)
+    def __str__(self):
+        return self.CardOrder.UserOder.user.username +"____"+ str(self.CardOrder.OrderDate.date())
