@@ -2,9 +2,18 @@
 {% load static %}
 {% block content %}
 <article class="card mb-4">
-<div class="card-body">
+<div >
+    <div class="col-md-3" style="padding:20px ;float: left">
+		<!--   SIDEBAR   -->
+		{% include 'dashboard/Menue.html' %}
+		<br>
+		<a class="btn btn-light btn-block" href="#"> <i class="fa fa-power-off"></i> <span class="text">Log out</span> </a>
+		<!--   SIDEBAR .//END   -->
+	</div>
+<div class="card-body" style="padding:20px;width:900px;float: right">
 	<h4 class="card-title mb-4">Contact info</h4>
-	<form action="">
+	<form method="post" action="/EditProfile">
+        {% csrf_token %}
 		<div class="row">
 			<div class="form-group col-sm-6">
 				<label>Frst name</label>
@@ -27,6 +36,8 @@
               <button type="submit" class="btn btn-primary btn-block"> Update  </button>
           </div>
 	</form>
-</div> <!-- card-body.// -->
+</div>
+</div>
+ <!-- card-body.// -->
 </article> <!-- card.// -->
 {% endblock %}
