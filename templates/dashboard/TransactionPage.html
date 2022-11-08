@@ -1,7 +1,7 @@
-{% extends 'base.html' %}
+{%extends 'base.html' %}
 {% load static %}
 {% block content %}
-    <section class="section-conten padding-y bg">
+<section class="section-conten padding-y bg">
 
 <div class="container">
 	<div class="row">
@@ -12,7 +12,9 @@
 		<a class="btn btn-light btn-block" href="#"> <i class="fa fa-power-off"></i> <span class="text">Log out</span> </a>
 		<!--   SIDEBAR .//END   -->
 	</aside>
+
 	<main class="col-md-9">
+    {% for item in object %}
 		<article class="card">
 		<header class="card-header">
 			<strong class="d-inline-block mr-3">Order ID: 6123456789</strong>
@@ -40,21 +42,26 @@
 			</div> <!-- row.// -->
 		</div> <!-- card-body .// -->
 		<div class="table-responsive">
+
 		<table class="table table-hover">
-            {% for item in object %}
+
+                {% for element in item %}
 			<tr>
 				<td width="65">
-					<img src=" {{ item.productorder.Pro_Detail.image.url }}" class="img-xs border">
+					<img src=" {{ element.productorder.Pro_Detail.image.url }}" class="img-xs border">
 				</td>
 				<td>
-					<var class="price text-muted">{{ item.order_count }}*{{item.productorder.Pro_Detail.price}}$</var>
+					<var class="price text-muted">{{ element.order_count }}*{{element.productorder.Pro_Detail.price}}$</var>
 				</td>
-				<td width="250"> <a  class="btn btn-outline-primary">Not Received</a> <a href="/ProductDetail/{{ item.productorder.id }}" class="btn btn-light"> Details </a> </td>
+				<td width="250"> <a  class="btn btn-outline-primary">Not Received</a> <a href="/ProductDetail/{{ element.productorder.id }}" class="btn btn-light"> Details </a> </td>
 			</tr>
-            {% endfor %}
+                {% endfor %}
+
 		</table>
+
 		</div> <!-- table-responsive .end// -->
-		</article> <!-- order-group.// -->
+		</article>
+        {% endfor %}<!-- order-group.// -->
 	</main>
 </div> <!-- row.// -->
 </div>
