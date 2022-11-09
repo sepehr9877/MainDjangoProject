@@ -35,11 +35,10 @@
 			</a>
 		</header>
 		<div class="filter-content collapse show" id="collapse_4" style="">
-			<div class="card-body">
+			<div id="size_parent" class="card-body">
                 {% for size in SizeRates %}
-			  <label class="checkbox-btn">
-			    <input type="checkbox">
-			    <span onclick="ChangeSize('{{ size }}')" title="{{ size }}" class="btn btn-light"> {{ size}} </span>
+			  <label  class="checkbox-btn">
+			    <span id="size{{ forloop.counter }}" onclick="ChangeSize('{{ size }}','{{ forloop.counter }}')" style="" title="{{ size }}" class="btn btn-light"> {{ size}} </span>
 			  </label>
                 {% endfor %}
 		</div><!-- card-body.// -->
@@ -137,8 +136,18 @@
 <script>
 var globalsize;
 var maxprice;
-function ChangeSize(size){
-    console.log(size)
+function ChangeSize(size,counter){
+    var size_parent=document.getElementById('size_parent')
+    var child_size=size_parent.children
+    for(var i=0;i<child_size.length;i++){
+        var child=child_size[i]
+        var childsize=child.children
+        childsize[0].style.backgroundColor="white"
+
+    }
+    var sizeEl=document.getElementById('size'+counter)
+    console.log(sizeEl)
+    sizeEl.style.backgroundColor='blue'
     globalsize=size;
 }
 
@@ -179,7 +188,7 @@ function callingSearchPage(ProductsId){
             },
             success(response) {
                 if(response.isAssigned){
-                    window.location.href="/Search/"
+                    window.location.href="/SearchFiltering"
                 }
             }
         }

@@ -10,6 +10,25 @@ from Categories.models import Category
 from Product.models import Product,ProductDetail
 from SizeColor.models import Colors,Sizes
 # Create your views here.
+class SearchFilter(ListView):
+    model = ProductDetail
+    template_name = 'SearchResult/SearchResult.html'
+    paginate_by = 3
+    items_search=ProductDetail.objects.all()
+    count=None
+    def get_queryset(self):
+
+        self.count=len(self.items_search)
+        return self.items_search
+    def get_context_data(self, *args, **kwargs):
+        context=super(SearchFilter, self).get_context_data(*args,**kwargs)
+        categories = Category.objects.filter(Parentitem=None).distinct()
+        SizeRates = Sizes.objects.all().distinct()
+        context['Categories'] = categories
+        context['SizeRates'] = SizeRates
+        context['Counts'] = self.count
+        return context
+
 class searchview(ListView):
     model = ProductDetail
     template_name = 'SearchResult/SearchResult.html'
@@ -141,8 +160,9 @@ def AssignQuerytoSearch(request):
     listQuerySet=[]
     for item in mylist:
         listQuerySet.append(ProductDetail.objects.get(id=int(item)))
-    searchview.SearchFilter=listQuerySet
-    return redirect("/Search/")
+    SearchFilter.items_search=listQuerySet
+    print(listQuerySet)
+    # return redirect("/Search/")
     data={
         "isAssigned":True
     }
