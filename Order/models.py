@@ -1,6 +1,7 @@
 from django.db import models
 from Account.models import Account,User
 from Product.models import ProductDetail
+
 # Create your models here.
 class Order(models.Model):
     UserOder=models.ForeignKey(Account,on_delete=models.CASCADE)

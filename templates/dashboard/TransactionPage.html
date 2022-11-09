@@ -15,6 +15,7 @@
 
 	<main class="col-md-9">
     {% for item in object %}
+
 		<article class="card">
 		<header class="card-header">
 			<strong class="d-inline-block mr-3">Order ID: 6123456789</strong>
@@ -24,19 +25,19 @@
 			<div class="row">
 				<div class="col-md-8">
 					<h6 class="text-muted">Delivery to</h6>
-					<p>{{ username }} <br>
-					Phone {{ shipping.phone }} Email:{{ shipping.email }} <br>
-			    	Location: {{ shipping.house }},{{ shipping.building }}, Street{{shipping.street}},{{ shipping.state }}, {{shipping.Country  }} <br>
-			    	P.O. Box:{{ shipping.zip }}
+					<p> {{ item.ShippingDetail.firstname }}<br>
+					Phone {{ item.ShippingDetail.phone }} Email:{{ item.ShippingDetail.email }} <br>
+			    	Location: {{ item.ShippingDetail.house }},{{ item.ShippingDetail.building }}, Street{{item.ShippingDetail.street}},{{ item.ShippingDetail.state }}, {{item.ShippingDetail.Country  }} <br>
+			    	P.O. Box:{{ item.ShippingDetail.zip }}
 			 		</p>
 				</div>
 				<div class="col-md-4">
 					<h6 class="text-muted">Payment</h6>
 					<span class="text-success">
 						<i class="fab fa-lg fa-cc-visa"></i>
-					    Visa {{ carddetail.CardNumber }}
+					    Visa {{ item.CardSpec.CardNumber }}
 					</span>
-					<p>Subtotal: ${{ total_price.PriceOrder }} <br>
+					<p>Subtotal: ${{  item.OrderItem.PriceOrder }} <br>
 					</p>
 				</div>
 			</div> <!-- row.// -->
@@ -45,15 +46,19 @@
 
 		<table class="table table-hover">
 
-                {% for element in item %}
+                {% for product in item.OrderDetail %}
 			<tr>
 				<td width="65">
-					<img src=" {{ element.productorder.Pro_Detail.image.url }}" class="img-xs border">
+					<img src=" {{ product.productorder.Pro_Detail.image.url }}" class="img-xs border">
 				</td>
 				<td>
-					<var class="price text-muted">{{ element.order_count }}*{{element.productorder.Pro_Detail.price}}$</var>
+					<var class="price text-muted">{{ product.order_count }}*{{product.productorder.Pro_Detail.price}}$</var>
 				</td>
-				<td width="250"> <a  class="btn btn-outline-primary">Not Received</a> <a href="/ProductDetail/{{ element.productorder.id }}" class="btn btn-light"> Details </a> </td>
+                {% if product.received %}
+				<td width="250"> <a  class="btn btn-outline-primary">Received</a> <a href="/ProductDetail/{{ product.productorder.id }}" class="btn btn-light"> Details </a> </td>
+                {% else %}
+                <td width="250"> <a  class="btn btn-outline-primary">Not Received</a> <a href="/ProductDetail/{{ product.productorder.id }}" class="btn btn-light"> Details </a> </td>
+                {% endif %}
 			</tr>
                 {% endfor %}
 
@@ -61,6 +66,7 @@
 
 		</div> <!-- table-responsive .end// -->
 		</article>
+
         {% endfor %}<!-- order-group.// -->
 	</main>
 </div> <!-- row.// -->
