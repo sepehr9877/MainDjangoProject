@@ -10,10 +10,14 @@
 
 		<form method="post" action="/Registration">
         {% csrf_token %}
+        {{ Registration.non_field_errors }}
 				<div class="form-row">
 					<div class="col form-group">
 						<label>First name</label>
 					  	{{ Registration.username }}
+                        {% for error in Registration.username.errors %}
+                            <p style="color: red">{{ error }}</p>
+                        {% endfor %}
 					</div> <!-- form-group end.// -->
 					<div class="col form-group">
 						<label>Last name</label>
@@ -22,7 +26,11 @@
 				</div> <!-- form-row end.// -->
 				<div class="form-group">
 					<label>Email</label>
+
 					{{ Registration.email }}
+                    {% for error in Registration.email.errors %}
+                            <p style="color: red">{{ error }}</p>
+                        {% endfor %}
 					<small class="form-text text-muted">We'll never share your email with anyone else.</small>
 				</div> <!-- form-group end.// -->
 				<div class="form-group">
@@ -38,6 +46,7 @@
 					<div class="form-group col-md-6">
 					  <label>City</label>
 					  {{ Registration.city }}
+
 					</div> <!-- form-group end.// -->
 					<div class="form-group col-md-6">
 					  <label>Country</label>
@@ -52,6 +61,10 @@
 					<div class="form-group col-md-6">
 						<label>Repeat password</label>
 					    {{ Registration.repassword }}
+                        {% for error in Registration.repassword.errors %}
+                            <p style="color: red">{{ error }}</p>
+                        {% endfor %}
+{#                        {{ Registration.repassword.errors }}#}
 					</div> <!-- form-group end.// -->
 				</div>
 			    <div class="form-group">

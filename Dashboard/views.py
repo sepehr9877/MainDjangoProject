@@ -1,3 +1,4 @@
+from django.contrib.auth import logout
 from django.contrib.auth.models import User
 from django.shortcuts import render, redirect
 from django.views.generic import DetailView,View,CreateView
@@ -87,30 +88,8 @@ class MyTransactionOrder(DetailView):
         # return render(self.request,template_name=self.template_name,context={"queryset":queryset})
 
 
-def Tamrine(request):
-    userid =request.user.id
-    selected_account = Account.objects.filter(user_id=userid).first()
-    Order_user = Order.objects.filter(UserOder__user_id=userid).all()
-    shippingdetail = ShippingDetail.objects.filter(ShipOrder__UserOder_id=selected_account.id)
-    print(shippingdetail)
-    QuerySet = []
 
-    QuerySetDictionary = {
-        "ShippingDetail": None,
-        "OrderDetail": None
-    }
-    QuerySetList = []
-    for item in Order_user:
-        QuerySet.append(OrderDetail.objects.filter(orderdetail_id=item.id))
-    for Order_item in Order_user:
-        QuerySetDictionary = {
-            "ShippingDetail": None,
-            "OrderDetail": None
-        }
-        for shipping_item in shippingdetail:
-            if (shipping_item.ShipOrder.id == Order_item.id):
-                QuerySetDictionary.update({'ShippingDetail': shipping_item})
-                QuerySetDictionary.update({"OrderDetail": OrderDetail.objects.filter(orderdetail_id=Order_item.id)})
-                QuerySetList.append(QuerySetDictionary)
-    context={"MYQuerySet":QuerySetList}
-    return render(request,template_name='Practice.html',context=context)
+def logoutuser(request):
+    logout(request)
+    return redirect("/")
+
