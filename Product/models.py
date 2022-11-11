@@ -41,10 +41,21 @@ class Product(models.Model):
     def __str__(self):
         return self.title
 class ProductDetail_Manger(models.Manager):
+    def GetallProducts(self):
+        products=ProductDetail.objects.all().values_list('Pro_Detail_id')
+        selected_products=[]
+        for item in set(products):
+            selected_products.append(ProductDetail.objects.filter(Pro_Detail_id=item[0]).first())
+        return selected_products
     def Searhcitem(self,name):
-        serachitem=ProductDetail.objects.filter(Pro_Detail__title__contains=name)
+        serachitem=ProductDetail.objects.filter(Pro_Detail__title__contains=name).values_list('Pro_Detail_id')
+        search_result=[]
         print(serachitem)
-        return serachitem
+        for item in set(serachitem):
+            search_result.append(ProductDetail.objects.filter(Pro_Detail_id=item[0]).first())
+        print("search")
+        print(search_result)
+        return search_result
     def convert_value_to_list(self,QuerySetDictionary):
         list_vlaue=[]
         for dictionary in QuerySetDictionary:
