@@ -76,7 +76,12 @@ class CartPage(DetailView):
         for item in total_price:
             total__price.append(item.totalpriceorder)
         context['totalsum']=sum(total__price)
-        context['total']=context['totalsum']-10
+        print(context['totalsum'])
+        print("totalsum")
+        if context['totalsum']==0:
+            context['total']=0
+        else:
+            context['total']=context['totalsum']-10
         return context
 
 def Removeitem(request,**kwargs):

@@ -1,4 +1,5 @@
 from django import forms
+from django.contrib.auth import authenticate
 from django.core.exceptions import ValidationError
 from django.forms import TextInput, RadioSelect, Select, EmailInput, ModelForm,CharField
 from .models import Account
@@ -51,4 +52,12 @@ class LoginForm(forms.Form):
     Password=forms.CharField(
         widget=forms.TextInput(attrs={"class":"form-control","placeholder":"Enter Your Password"})
     )
+    def clean_Password(self):
+        password=self.cleaned_data['Password']
+        username=self.cleaned_data['UserName']
 
+        selected_user=authenticate(username=username,password=password)
+        print(selected_user)
+        if not selected_user:
+            raise forms.ValidationError("Check Your Password or Username")
+        return password

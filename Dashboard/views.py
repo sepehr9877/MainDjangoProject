@@ -40,19 +40,23 @@ class ProfileEditPage(DetailView):
         context={"Profile_Spec":UpdateProfile(initial=initial_date)}
         return render(self.request,template_name=self.template_name,context=context)
     def post(self, request, *args, **kwargs):
-        profile_form=UpdateProfile(data=self.request.POST or None)
+        profile_form=UpdateProfile(data=self.request.POST or self.request.FILES or None)
         userid=self.request.user.id
         if profile_form.is_valid():
             username=profile_form.cleaned_data['username']
             lastname=profile_form.cleaned_data['lastname']
             phone=profile_form.cleaned_data['phone']
             email=profile_form.cleaned_data['email']
+            image=self.request.FILES['image']
+            print("image")
+            print(image)
+            image="/user/"+str(image)
             user=User.objects.filter(id=userid).first()
             user.first_name=username
             user.last_name=lastname
             user.email=email
             user.save()
-            account=Account.objects.filter(user_id=userid).update(phonenumber=phone)
+            account=Account.objects.filter(user_id=userid).update(phonenumber=phone,image=image)
         return redirect('/EditProfile')
 class MyTransactionOrder(DetailView):
     template_name = 'dashboard/TransactionPage.html'

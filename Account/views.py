@@ -50,25 +50,26 @@ class LoginPage(FormView):
     template_name = 'Login_Reg/loginpage.html'
     form_class = LoginForm
     def get(self, request, *args, **kwargs):
+        log_form=LoginForm()
         if(self.request.user.is_authenticated):
             print(self.request.user.username)
             return redirect("/")
         else:
-            return render(request=self.request,template_name=self.template_name,context={"loginform":LoginForm})
+            return render(request=self.request,template_name=self.template_name,context={"loginform":log_form})
     def post(self, request, *args, **kwargs):
         request=self.request
         log_form=LoginForm(data=request.POST)
         if(self.form_valid(form=log_form)):
             username=log_form.cleaned_data.get("UserName")
-            password=log_form.cleaned_data.get("Password")
+            password=log_form.clean_Password()
             user=authenticate(self.request,username=username,password=password)
             if user is not None:
 
                 login(self.request,user)
                 print(self.request.user.username)
                 return redirect("/")
-            else:
-                raise ValueError("You Dont Have An Account")
+        else:
+            return render(request=request,template_name=self.template_name,context={"loginform":log_form})
     def form_valid(self, form):
         if form.is_valid():
             return True

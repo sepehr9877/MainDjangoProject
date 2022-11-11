@@ -42,9 +42,9 @@ class searchview(ListView):
 
         if name is None:
             self.count=ProductDetail.objects.all().count()
-            return ProductDetail.objects.all()
+            return ProductDetail.objects.GetallProducts()
         else:
-            self.count=ProductDetail.objects.Searhcitem(name).count()
+            self.count=len(ProductDetail.objects.Searhcitem(name))
             return ProductDetail.objects.Searhcitem(name)
 
 
@@ -66,11 +66,15 @@ class CategorySearch(ListView):
         self.slugvalue=None
         categoryname=self.get_slug_value()
         print(categoryname)
-        Product_Category = ProductDetail.objects.filter(Pro_Cat__ParentCategory__icontains=categoryname)
+        Product_Category=[]
+        Selected_Products = ProductDetail.objects.filter(Pro_Cat__ParentCategory__icontains=categoryname).values_list('Pro_Detail_id')
+        for item in set(Selected_Products):
+            Product_Category.append(ProductDetail.objects.filter(Pro_Detail_id=item[0]).first())
+        print(Product_Category)
         if len(Product_Category)==0:
             print("Product_Category")
             Product_Category=ProductDetail.objects.filter(Pro_Cat__Parentitem__ParentCategory=categoryname)
-        self.count=Product_Category.count()
+        self.count=len(Product_Category)
         return Product_Category
     def get_slug_value(self):
         self.slugvalue=self.kwargs['CategoryName']
@@ -98,7 +102,7 @@ class ProductDetailView(DetailView):
     def get_context_data(self,*args, **kwargs):
         context=super(ProductDetailView, self).get_context_data(*args,**kwargs)
         productid=ProductDetail.objects.filter(id=self.ID).values('Pro_Detail_id')
-
+        print("Get context")
         print(productid)
         p_id=[]
         for item in productid:
@@ -152,18 +156,22 @@ class SearchBySize(DetailView):
 def AssignQuerytoSearch(request):
     ProductsIDList=request.GET.get('ProductsList')
     print("ProductsId")
-    print(ProductsIDList)
+    print(len(ProductsIDList))
+
     mylist=ProductsIDList.strip('][').split(',')
-    print(mylist)
-    print("mylist")
-    print(mylist[0])
-    listQuerySet=[]
-    for item in mylist:
-        listQuerySet.append(ProductDetail.objects.get(id=int(item)))
-    SearchFilter.items_search=listQuerySet
-    print(listQuerySet)
-    # return redirect("/Search/")
-    data={
-        "isAssigned":True
-    }
+    print(len(mylist))
+    if len(mylist)==1:
+        data = {
+            "isAssigned": False
+        }
+    else:
+        listQuerySet=[]
+
+        for item in mylist:
+            listQuerySet.append(ProductDetail.objects.get(id=int(item)))
+        SearchFilter.items_search=listQuerySet
+        print(listQuerySet)
+        data={
+            "isAssigned":True
+        }
     return JsonResponse(data,safe=False)

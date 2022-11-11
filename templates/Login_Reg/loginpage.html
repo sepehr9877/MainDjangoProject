@@ -14,6 +14,9 @@
           </div> <!-- form-group// -->
           <div class="form-group">
 			{{  loginform.Password}}
+              {% for error in loginform.Password.errors %}
+                  <p style="color: red">{{ error }}</p>
+              {% endfor %}
           </div> <!-- form-group// -->
 
           <div class="form-group">
