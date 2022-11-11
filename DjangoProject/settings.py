@@ -76,7 +76,7 @@ TEMPLATES = [
                 'Comments.context_processors.passform',
                 'Comments.context_processors.pass_all_comments',
                 'Product.context_processors.populare_product',
-                'DjangoProject.context_processors.orderusercount'
+                'DjangoProject.context_processors.orderusercount',
 
 
             ],

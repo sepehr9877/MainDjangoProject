@@ -24,9 +24,26 @@ class Registerform(forms.Form):
     gender=forms.CharField(widget=RadioSelect(choices=Gender))
     def clean_repassword(self):
         repassword=self.cleaned_data['repassword']
+        print("repassword")
         password=self.cleaned_data['password']
         if password!=repassword:
-            raise ValidationError("Passwords arent match")
+            print("enter the password error")
+            raise forms.ValidationError("Passwords arent match")
+        return password
+    def clean_username(self):
+        username=self.cleaned_data['username']
+        print("username")
+        selected_user=Account.objects.filter(user__username=username)
+        if selected_user:
+            print("enter error")
+            raise forms.ValidationError("Username Already Existed")
+        return username
+    def clean_email(self):
+        email=self.cleaned_data['email']
+        selected_email=Account.objects.filter(user__email=email)
+        if selected_email:
+            raise forms.ValidationError("Email Already Existed")
+        return email
 class LoginForm(forms.Form):
     UserName=forms.CharField(
         widget=forms.TextInput(attrs={"class":"form-control","placeholder":"Enter Your Username"})

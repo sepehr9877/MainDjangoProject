@@ -31,8 +31,8 @@ class CreatingOrder(CreateView):
         user_order=Order.objects.filter(UserOder_id=selected_account.id,transaction=False)
         print(user_order)
         if len(user_order)==0:
-            user_order=Order.objects.create(UserOder_id=selected_account.id)
-
+            createuser=Order.objects.create(UserOder_id=selected_account.id)
+        user_order = Order.objects.filter(UserOder_id=selected_account.id, transaction=False)
         return user_order
     def check_productdetail(self,productid,color,size):
         selected_product=ProductDetail.objects.filter(Pro_Detail_id=productid,
@@ -40,9 +40,13 @@ class CreatingOrder(CreateView):
                                                    Pro_size__SizeRate=size)
         return selected_product
     def CreateOrderDetail(self,Product_Detail,OrderSpec):
-        print(Product_Detail,OrderSpec)
-        OrderDetailEl=OrderDetail.objects.filter(orderdetail__in=OrderSpec,productorder__in=Product_Detail)
+        print("Order,ProductDetail")
+        print(OrderSpec)
+        OrderDetailEl=OrderDetail.objects.filter(orderdetail=OrderSpec[0],productorder=Product_Detail[0])
+        print("eeeeee")
+        print(len(OrderDetailEl))
         if len(OrderDetailEl)==0:
+            print("ccc")
             OrderDetailEl=OrderDetail.objects.create(orderdetail=OrderSpec[0], productorder=Product_Detail[0])
         self.Orderdetail = OrderDetailEl
         return OrderDetailEl
