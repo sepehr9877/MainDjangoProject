@@ -11,16 +11,23 @@ class DashBoardPage(DetailView):
     Selected_Order_user=None
     Selected_Order_Detail=None
     template_name = 'dashboard/Dashboard.html'
+    def dispatch(self, request, *args, **kwargs):
+        if self.request.user.id is None:
+            return redirect("/")
+        else:
+            return self.get(request)
     def get_object(self, queryset=None):
         userid=self.request.user.id
-        self.Selected_Order_user=Order.objects.filter(UserOder__user_id=userid,transaction=True).order_by('OrderDate').first()
-        print("Order")
+        self.Selected_Order_user=Order.objects.filter(UserOder__user_id=userid,transaction=True).order_by('-OrderDate')[0]
         print(self.Selected_Order_user)
         queryset=OrderDetail.objects.filter(orderdetail_id=self.Selected_Order_user.id).all()
+        print("queryset")
+        print(queryset)
         return queryset
     def get_context_data(self,*args,**kwargs):
         context=super(DashBoardPage, self).get_context_data(*args,**kwargs)
         context['username']=self.request.user.username
+        context['Order'] = Order.objects.filter(UserOder__user_id=self.request.user.id,transaction=True).first()
         context['shipping']=ShippingDetail.objects.filter(ShipOrder_id=self.Selected_Order_user.id).first()
         context['carddetail']=CardSpecification.objects.filter(CardOrder_id=self.Selected_Order_user.id).first()
         context['total_price']=self.Selected_Order_user
@@ -48,8 +55,6 @@ class ProfileEditPage(DetailView):
             phone=profile_form.cleaned_data['phone']
             email=profile_form.cleaned_data['email']
             image=self.request.FILES['image']
-            print("image")
-            print(image)
             image="/user/"+str(image)
             user=User.objects.filter(id=userid).first()
             user.first_name=username
@@ -65,7 +70,11 @@ class MyTransactionOrder(DetailView):
         userid=self.request.user.id
         selected_account=Account.objects.filter(user_id=userid).first()
         Order_user=Order.objects.filter(UserOder__user_id=userid).all()
+        print("OrderUser")
+        print(Order_user)
         shippingdetail=ShippingDetail.objects.filter(ShipOrder__UserOder_id=selected_account.id)
+        print("Ship")
+        print(shippingdetail)
         QuerySetDictionary = {
             "ShippingDetail": None,
             "OrderDetail": None,
@@ -83,16 +92,14 @@ class MyTransactionOrder(DetailView):
                 if(shipping_item.ShipOrder.id==Order_item.id):
                     QuerySetDictionary.update({'ShippingDetail':shipping_item})
                     QuerySetDictionary.update({"OrderDetail":OrderDetail.objects.filter(orderdetail_id=Order_item.id)})
+                    print(OrderDetail.objects.filter(orderdetail_id=Order_item.id))
+                    print(Order_item.id)
                     QuerySetDictionary.update({"OrderItem":Order_item})
                     QuerySetDictionary.update({"CardSpec":CardSpecification.objects.filter(CardOrder_id=Order_item.id).first()})
                     QuerySetList.append(QuerySetDictionary)
         queryset=QuerySetList
         print(QuerySetList)
         return queryset
-        # return render(self.request,template_name=self.template_name,context={"queryset":queryset})
-
-
-
 def logoutuser(request):
     logout(request)
     return redirect("/")

@@ -14,14 +14,14 @@
 	<main class="col-md-9">
 		<article class="card">
 		<header class="card-header">
-			<strong class="d-inline-block mr-3">Order ID: 6123456789</strong>
+			<strong class="d-inline-block mr-3">Order ID: {{ Order.OrderNumber  }}</strong>
 			<span>Order Date: 16 December 2018</span>
 		</header>
 		<div class="card-body">
 			<div class="row">
 				<div class="col-md-8">
-					<h6 class="text-muted">Delivery to</h6>
-					<p>{{ username }} <br>
+					<h6 class="text-muted">Delivery to:</h6>
+					<p>{{ Order.UserOrder.user.username }} <br>
 					Phone {{ shipping.phone }} Email:{{ shipping.email }} <br>
 			    	Location: {{ shipping.house }},{{ shipping.building }}, Street{{shipping.street}},{{ shipping.state }}, {{shipping.Country  }} <br>
 			    	P.O. Box:{{ shipping.zip }}

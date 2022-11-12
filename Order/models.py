@@ -5,6 +5,7 @@ from Product.models import ProductDetail
 # Create your models here.
 class Order(models.Model):
     UserOder=models.ForeignKey(Account,on_delete=models.CASCADE)
+    OrderNumber=models.IntegerField(default=0)
     PriceOrder=models.IntegerField(null=True,blank=True)
     OrderDate=models.DateTimeField(auto_now_add=True)
     transaction=models.BooleanField(default=False)
