@@ -7,7 +7,7 @@ from .models import OrderDetail,Order,ShippingDetail,CardSpecification
 from django.views.generic import CreateView, ListView, DetailView
 from Account.models import Account,User
 from .forms import ShippingForm,CreditCardForm
-
+import random
 class CreatingOrder(CreateView):
     Orderdetail=None
     def get(self, request, *args, **kwargs):
@@ -31,28 +31,23 @@ class CreatingOrder(CreateView):
         user_order=Order.objects.filter(UserOder_id=selected_account.id,transaction=False)
         print(user_order)
         if len(user_order)==0:
-            createuser=Order.objects.create(UserOder_id=selected_account.id)
+            OrdreNumber = random.sample(range(100000, 10000000))
+            createuser=Order.objects.create(UserOder_id=selected_account.id,OrderNumber=OrdreNumber)
         user_order = Order.objects.filter(UserOder_id=selected_account.id, transaction=False)
         return user_order
     def check_productdetail(self,productid,color,size):
         selected_product=ProductDetail.objects.filter(Pro_Detail_id=productid,
                                                    Pro_color__Color_Rate=color,
-                                                   Pro_size__SizeRate=size)
+                                                   Pro_size__SizeRate=size,
+                                                      )
         return selected_product
     def CreateOrderDetail(self,Product_Detail,OrderSpec):
-        print("Order,ProductDetail")
-        print(OrderSpec)
         OrderDetailEl=OrderDetail.objects.filter(orderdetail=OrderSpec[0],productorder=Product_Detail[0])
-        print("eeeeee")
-        print(len(OrderDetailEl))
         if len(OrderDetailEl)==0:
-            print("ccc")
             OrderDetailEl=OrderDetail.objects.create(orderdetail=OrderSpec[0], productorder=Product_Detail[0])
         self.Orderdetail = OrderDetailEl
         return OrderDetailEl
     def CheckOrderDetail(self):
-        print("self.Orderdetail")
-        print(self.Orderdetail)
         CheckOrder=OrderDetail.objects.filter(id=self.Orderdetail.id)
         if len(CheckOrder)==0:
             return False
@@ -61,6 +56,12 @@ class CreatingOrder(CreateView):
 
 class CartPage(DetailView):
     template_name = 'Order/CartPage.html'
+    def dispatch(self, request, *args, **kwargs):
+        userid=self.request.user.id
+        if userid is None:
+            return redirect("/")
+        else:
+            return self.get(request)
     def get_object(self, queryset=None):
         userid=self.request.user.id
         selected_account=Account.objects.filter(user_id=userid).first()
@@ -69,7 +70,6 @@ class CartPage(DetailView):
     def get_context_data(self, *args,**kwargs):
         context=super(CartPage, self).get_context_data(*args,**kwargs)
         userid = self.request.user.id
-
         selected_account = Account.objects.filter(user_id=userid).first()
         total_price= OrderDetail.objects.filter(orderdetail__UserOder_id=selected_account.id,orderdetail__transaction=False, purchase=False)
         total__price=[]
@@ -95,15 +95,34 @@ def Removeitem(request,**kwargs):
 
 class CheckCard(DetailView):
     template_name = 'Order/CheckCard.html'
-
+    order_detail=None
+    account_sl=None
+    order_sl=None
+    def setup(self, request, *args, **kwargs):
+        super(CheckCard, self).setup(request)
+        request=self.request
+        args=self.args
+        kwargs=self.kwargs
+        userid = request.user.id
+        self.account_sl = Account.objects.filter(user_id=userid).first()
+        self.order_sl = Order.objects.filter(UserOder_id=self.account_sl.id, transaction=False).first()
+        if self.order_sl:
+            self.order_detail = OrderDetail.objects.filter(orderdetail_id=self.order_sl.id, purchase=False).all()
+        else:
+            self.order_detail=None
+    def dispatch(self, request, *args, **kwargs):
+        if request.method=="POST":
+            self.post(request)
+            return redirect("/DashboardPage")
+        if self.order_detail is None:
+            return redirect("/")
+        else:
+            return self.get(request)
     def get_object(self, queryset=None):
-        userid = self.request.user.id
-        account_sl = Account.objects.filter(user_id=userid).first()
-        order_sl = Order.objects.filter(UserOder_id=account_sl.id,transaction=False).first()
-        order_detail = OrderDetail.objects.filter(orderdetail_id=order_sl.id,purchase=False).all()
-        queryset=order_detail
+        queryset=self.order_detail
         return queryset
     def post(self, request, *args, **kwargs):
+        print("enter post")
         deliveryform=ShippingForm(data=self.request.POST or None)
         CardDetail=CreditCardForm(data=self.request.POST or None)
         if(deliveryform.is_valid() and CardDetail.is_valid()):
@@ -122,24 +141,15 @@ class CheckCard(DetailView):
             cardcsv=CardDetail.cleaned_data['cardcsv']
             cardyear=CardDetail.cleaned_data['card_year']
             orderuser=Order.objects.filter(UserOder__user_id=self.request.user.id,transaction=False).first()
-            selected_shipping=ShippingDetail.objects.filter(ShipOrder_id=orderuser.id)
-            if(selected_shipping):
-                updateshipping = ShippingDetail.objects.filter(ShipOrder_id=orderuser.id).update( firstname=firstname,
-                                                                         lastname=lastname,
-                                                                         email=email, phone=phone,
-                                                                         zip=zip, house=house,
-                                                                         building=building, street=street,
-                                                                         state=state, postalcode=postalcode)
-            else:
-                updateshipping = ShippingDetail.objects.create(ShipOrder_id=orderuser.id,firstname=firstname,
-                                                                                                 lastname=lastname,
-                                                                                                 email=email,
-                                                                                                 phone=phone,
-                                                                                                 zip=zip, house=house,
-                                                                                                 building=building,
-                                                                                                 street=street,
-                                                                                                 state=state,
-                                                                                                 postalcode=postalcode)
+            Create_Shipping = ShippingDetail.objects.create(ShipOrder_id=orderuser.id, firstname=firstname,
+                                                           lastname=lastname,
+                                                           email=email,
+                                                           phone=phone,
+                                                           zip=zip, house=house,
+                                                           building=building,
+                                                           street=street,
+                                                           state=state,
+                                                           postalcode=postalcode)
             CardSpecification.objects.create(CardOrder_id=orderuser.id,
                                              CardMonth=cardmonth,
                                              CardNumber=cardnumber,
@@ -147,7 +157,6 @@ class CheckCard(DetailView):
                                              CardYear=cardyear)
             Order.objects.filter(UserOder__user_id=self.request.user.id,transaction=False).update(transaction=True)
 
-            return redirect("/")
 
 
     def get_context_data(self,*args,**kwargs):
@@ -159,7 +168,12 @@ class CheckCard(DetailView):
         for item in sum_order:
             total_sum.append(item.totalpriceorder)
         context['totalsum']=sum(total_sum)
-        context['finalprice']=context['totalsum']-10
+        print("cconte")
+        print(context['totalsum'])
+        if context['totalsum']==0:
+            context['finalprice']=0
+        else:
+            context['finalprice']=context['totalsum']-10
         shippingdetail=ShippingDetail.objects.filter(ShipOrder__UserOder_id=account.id,ShipOrder__transaction=True).first()
 
         if(shippingdetail):
@@ -199,7 +213,6 @@ def ReduceCount(request):
     quantity = request.GET.get("quantity")
     productid = request.GET.get("prodcutdetailid")
     userid = request.user.id
-    print("vee")
     OrderDetail.objects.filter(orderdetail__UserOder__user_id=userid, orderdetail__transaction=False,productorder_id=productid).update(order_count=quantity)
 
 def AddtoCart(request):
