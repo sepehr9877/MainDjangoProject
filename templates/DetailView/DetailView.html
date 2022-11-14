@@ -52,9 +52,12 @@
 		</div>
 	</div> <!-- row.// -->
 	<hr>
-
+        {% if user.id %}
         <button id="CartButton" onclick="click_addtocart()" class="btn btn-primary btn-block" hidden>Add To Cart</button>
-
+        {% endif %}
+        {% if not user.id%}
+        <a  href="/LoginPage" class="btn btn-primary btn-block" >You Have To Register First!!</a>
+        {% endif %}
 {#	<a href="./product-detail.html" class="btn  btn-primary"> <span class="text">Add to cart</span> <i class="fas fa-shopping-cart"></i>  </a>#}
 </article> <!-- product-info-aside .// -->
 		</main> <!-- col.// -->
@@ -63,9 +66,25 @@
 <!-- ============================ COMPONENT 1 END .// ================================= -->
 
 <br>
+{% if user.id %}
+<div class="row">
+			<div class="col-md-9">
 
-{% include 'DetailView/ReviewSection.html' with object=object %} <!-- row.// -->
+	<header class="section-heading">
+		<h3>Customer Reviews </h3>
 
+	</header>
+    <form action="/AddComment/{{ object.id }}" method="post" id="usrform">
+        {% csrf_token %}
+    {{ commentform.Description }}
+   <button type="submit" class="btn  btn-primary"> Submit  </button>
+    </form>
+    <br>
+{% include 'DetailView/ReviewSection.html' with object=Comments %} <!-- row.// -->
+</div> <!-- col.// -->
+</div>
+
+{% endif %}
 
 </div> <!-- container .//  -->
 </section>

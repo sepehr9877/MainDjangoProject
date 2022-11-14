@@ -6,7 +6,7 @@ from django.db import models
 from django.contrib.auth.models import User
 class Account(models.Model):
     user=models.ForeignKey(User,on_delete=models.CASCADE,null=True,blank=True)
-    image=models.ImageField(upload_to='user',null=True)
+    image=models.ImageField(upload_to='user',default="/user/user.jpg")
     city = models.CharField(max_length=50,null=True,blank=True)
     country = models.CharField(max_length=50,null=True,blank=True)
     gender = models.CharField(default="Male", max_length=10)

@@ -1,31 +1,19 @@
 {% load static %}
-<div class="row">
-			<div class="col-md-9">
 
-	<header class="section-heading">
-		<h3>Customer Reviews </h3>
-
-	</header>
-    <form action="/AddComment/{{ object.id }}" method="post" id="usrform">
-        {% csrf_token %}
-    {{ commentform.Description }}
-   <button type="submit" class="btn  btn-primary"> Submit  </button>
-    </form>
-    <br>
 
 	<article class="box mb-3" style="overflow: scroll;height: 200px">
-        {% for comment in comments %}
+        {% for comment in object %}
 		<div class="icontext w-100" >
-			<img src="{{ comment.User_Comment.image.url }}" class="img-xs icon rounded-circle">
+			<img src="{{ comment.ItemComment.User_Comment.image.url }}" class="img-xs icon rounded-circle">
 			<div class="text">
 				<span class="date text-muted float-md-right">{{ comment.DataCreated }}</span>
-				<h6 class="mb-1">{{ comment.User_Comment.user.username }} </h6>
+				<h6 class="mb-1">{{ comment.ItemComment.User_Comment.user.username }} </h6>
 			</div>
 		</div><!-- icontext.// -->
 
 		<div class="mt-3">
 			<p>
-				{{ comment.Description }}
+				{{ comment.ItemComment.Description }}
 			</p>
 		</div>
             <br>
@@ -34,5 +22,3 @@
 
 
 
-	</div> <!-- col.// -->
-</div>

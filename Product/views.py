@@ -5,7 +5,7 @@ from django.core.paginator import Paginator
 from django.http import JsonResponse
 from django.shortcuts import render, redirect
 from django.views.generic import ListView, TemplateView, DetailView
-
+from Comments.models import Product_Comment
 from Categories.models import Category
 from Product.models import Product,ProductDetail
 from SizeColor.models import Colors,Sizes
@@ -103,7 +103,10 @@ class ProductDetailView(DetailView):
         context=super(ProductDetailView, self).get_context_data(*args,**kwargs)
         productid=ProductDetail.objects.filter(id=self.ID).values('Pro_Detail_id')
         print("Get context")
-        print(productid)
+        print("Property")
+        getproduct=ProductDetail.objects.get(id=self.ID)
+        print(getproduct)
+        context['Comments']=Product_Comment.objects.GetAllComments(productdetailid=self.ID)
         p_id=[]
         for item in productid:
             for key in item:
@@ -120,7 +123,6 @@ class ProductDetailView(DetailView):
             for key in item:
                 color_rates.append(item.get(key))
         context['color_rates']=set(color_rates)
-        print(color_rates)
         return context
 class Filtering(DetailView):
     template_name = 'DetailView/DetailView.html'
