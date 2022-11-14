@@ -60,7 +60,7 @@
 				  <label>PriceRange</label>
 				  <!-- <input class="form-control" placeholder="$0" type="number"> -->
 				  	<select onchange="SelectMaxValue()" id="MaxPriceSelect" class="mr-2 form-control">
-						<option value="0">$0</option>
+
 						<option value="50">$50</option>
 						<option value="100">$100</option>
 						<option value="150">$150</option>
@@ -135,7 +135,7 @@
 </section>
 <script>
 var globalsize;
-var maxprice;
+var maxprice=50;
 function ChangeSize(size,counter){
     var size_parent=document.getElementById('size_parent')
     var child_size=size_parent.children
@@ -154,6 +154,7 @@ function ChangeSize(size,counter){
 function SelectMaxValue(){
     var maxpiceEl=document.getElementById('MaxPriceSelect')
     maxprice=maxpiceEl.options[maxpiceEl.selectedIndex].value
+    console.log(maxprice)
 }
 function ApplyButton(){
     console.log(globalsize)
