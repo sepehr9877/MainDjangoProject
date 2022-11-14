@@ -68,6 +68,7 @@ class ProductDetail(models.Model):
     Pro_size=models.ForeignKey(Sizes,on_delete=models.CASCADE,null=True,blank=True)
     Pro_color=models.ForeignKey(Colors,on_delete=models.CASCADE,null=True,blank=True)
     objects=ProductDetail_Manger()
+
     def pass_value_to_url(self):
         return reverse('ProductDetailView',args=[self.id])
     def __str__(self):

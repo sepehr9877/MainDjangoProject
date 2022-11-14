@@ -18,19 +18,25 @@ class DashBoardPage(DetailView):
             return self.get(request)
     def get_object(self, queryset=None):
         userid=self.request.user.id
-        self.Selected_Order_user=Order.objects.filter(UserOder__user_id=userid,transaction=True).order_by('-OrderDate')[0]
+        self.Selected_Order_user=Order.objects.filter(UserOder__user_id=userid,transaction=True).order_by('-OrderDate').first()
         print(self.Selected_Order_user)
-        queryset=OrderDetail.objects.filter(orderdetail_id=self.Selected_Order_user.id).all()
+        if self.Selected_Order_user is None:
+            queryset=None
+        else:
+            queryset=OrderDetail.objects.filter(orderdetail_id=self.Selected_Order_user.id).all()
         print("queryset")
         print(queryset)
         return queryset
     def get_context_data(self,*args,**kwargs):
         context=super(DashBoardPage, self).get_context_data(*args,**kwargs)
-        context['username']=self.request.user.username
-        context['Order'] = Order.objects.filter(UserOder__user_id=self.request.user.id,transaction=True).first()
-        context['shipping']=ShippingDetail.objects.filter(ShipOrder_id=self.Selected_Order_user.id).first()
-        context['carddetail']=CardSpecification.objects.filter(CardOrder_id=self.Selected_Order_user.id).first()
-        context['total_price']=self.Selected_Order_user
+        if self.Selected_Order_user is None:
+            context=None
+        else:
+            context['username']=self.request.user.username
+            context['Order'] = Order.objects.filter(UserOder__user_id=self.request.user.id,transaction=True).first()
+            context['shipping']=ShippingDetail.objects.filter(ShipOrder_id=self.Selected_Order_user.id).first()
+            context['carddetail']=CardSpecification.objects.filter(CardOrder_id=self.Selected_Order_user.id).first()
+            context['total_price']=self.Selected_Order_user
         return context
 
 
